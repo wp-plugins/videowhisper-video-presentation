@@ -1,0 +1,63 @@
+=== VideoWhisper Video Presentation ===
+Contributors: videowhisper, VideoWhisper.com
+Author: VideoWhisper.com
+Author URI: http://www.videowhisper.com
+Plugin Name: VideoWhisper Video Presentation
+Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
+Donate link: http://www.videowhisper.com/?p=Invest
+Tags: video, presentation, consultation, live, conference, sharing, file, chat, webcam, BuddyPress, flash, fms, red5, wowza, audio, video chat, videochat, widget, plugin, media, av, channel, sidebar, cam, group, groups, tab, slide, show, slideshow, moderator, administrator, speaker, encoder, e-learning
+Requires at least: 2.7
+Tested up to: 3.0.1
+Stable tag: trunk
+
+This video presentation web based software can easily be used with WordPress sites to implement live video presentation and consultation rooms for site users.
+
+== Description ==
+VideoWhisper Video Presentation is a premium high definition video communication software designed for online video consultations, interactive live presentations, trainings, webinars, coaching and online collaboration.
+
+It was designed for few to many 2 way moderated video communication. Moderators control what participant is displayed on main screen (speaker) and can also add an additional participant (inquirer) to ask questions or assist. Participants can change their public status (i.e. request to speak), upload and download room files, text and video chat.
+
+This plugin uses the WordPress username to login existing users. From plugin settings wordpress admin can configure who will be able to use this (everybody, site members, user list).
+
+Includes a widget that displays active rooms (with number of participants) and presentation access link.
+A Video Presentation page is added to the website and can be disabled from settings.
+
+There is a settings page with multiple parameters and permissions (what users can access - all, only members, predefined list).
+
+BuddyPress integration: If BuddyPress is installed this will add a Video Presentation tab to the group, where users can video chat and watch the presentations realtime in group room.
+Only group admins have moderator and presentation privileges.
+
+== Installation ==
+* Before installing this make sure all hosting requirements are met: http://www.videowhisper.com/?p=Requirements
+* Install the RTMP application using these instructions: http://www.videowhisper.com/?p=RTMP+Applications
+* Copy this plugin folder to your wordpress installation in your plugins folder. You should obtain wp-content/plugins/videowhisper-video-presentation .
+* Enable the plugin from Wordpress admin area and fill the "Settings", including rtmp address there.
+* Enable the widget if you want to display active rooms (with number of participants) and Presentation access link. 
+
+== Screenshots ==
+1. Live Video Presentation
+2. Toolbar Buttons
+3. External Video Encoder
+
+== Desktop Sharing / Screen Broadcasting ==
+If your users want to broadcast their screen (when playing a game, using a program, tutoring various computer skills) they can do that easily just by using a screen sharing driver that simulates a webcam from desktop contents. Read more on http://www.videochat-scripts.com/screen-sharing-with-flash-video-chat-software/ . 
+
+== Documentation ==
+* Plugin Homepage : http://www.videowhisper.com/?p=WordPress+Video+Presentation
+* Application Homepage : http://www.videowhisper.com/?p=Video+Consultation
+
+== Demo ==
+* See BuddyPress integration live on http://livon.tv/
+* See WordPress integration live on http://www.videochat-scripts.com/video-presentation/
+
+== Extra ==
+More information, the latest updates, other plugins and non-WordPress editions can be found at http://www.videowhisper.com/ .
+
+== Changelog ==
+= 1.1 =
+* BuddyPress integration: If BuddyPress is installed this will add a Video Presentation tab to the group where users can video chat realtime in group room.
+* Everything is in the plugin folder to allow automated updates.
+* Settings page to fill rtmp address.
+* Choose name to use in application (display name, login, nice name).
+* Access permissions (all, members, list).
+* List number of participants for each room.
