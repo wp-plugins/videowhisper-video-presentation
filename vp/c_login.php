@@ -8,6 +8,14 @@ $userName =  $options['userName']; if (!$userName) $userName='user_nicename';
 $canAccess = $options['canAccess'];
 $accessList = $options['accessList'];
 
+$serverRTMFP = $options['serverRTMFP'];
+$p2pGroup = $options['p2pGroup'];
+$supportRTMP = $options['supportRTMP'];
+$supportP2P = $options['supportP2P'];
+$alwaystRTMP = $options['alwaystRTMP'];
+$alwaystP2P = $options['alwaystP2P'];
+$disableBandwidthDetection = $options['disableBandwidthDetection'];
+
 $room=$_GET['room_name'];
 
 global $current_user;
@@ -83,7 +91,7 @@ $regularWatch=1;
 $privateTextchat=1;
 $externalStream=1;
 $slideShow=1;
-
+$publicVideosAdd=1;
 $extra_info = "<BR>You are moderator in this video presentation room. You can set any user as main speaker or inquirer on public video panels, show presentation slides, kick users.";
 }
 
@@ -99,4 +107,4 @@ $filterReplace=urlencode(" ** ");
 //message
 $welcome=urlencode("Welcome to $room!<BR><font color=\"#3CA2DE\">&#187;</font> Click top bar icons to enable/disable features and panels. <BR><font color=\"#3CA2DE\">&#187;</font> Click any participant from users list for more options depending on your permissions. <BR><font color=\"#3CA2DE\">&#187;</font> Try pasting urls, youtube movie urls, picture urls, emails, twitter accounts as @videowhisper in your text chat. <BR><font color=\"#3CA2DE\">&#187;</font> Download daily chat logs from file list. $extra_info");
 
-?>firstVar=fixed&server=<?=$rtmp_server?>&serverAMF=<?=$rtmp_amf?>&room=<?=$room?>&welcome=<?=$welcome?>&username=<?=$username?>&msg=<?=$message?>&visitor=0&loggedin=<?=$loggedin?>&background_url=<?=urlencode("templates/consultation/background.jpg")?>&change_background=<?=$change_background?>&room_limit=30&administrator=<?=$administrator?>&showTimer=1&showCredit=1&disconnectOnTimeout=1&regularCams=<?=$regularCams?>&regularWatch=<?=$regularWatch?>&camWidth=640&camHeight=480&camFPS=15&micRate=11&camBandwidth=65536&showCamSettings=1&advancedCamSettings=1&camMaxBandwidth=131072&configureSource=1&disableVideo=0&disableSound=0&bufferLive=0.5&bufferFull=0.5&bufferLivePlayback=0.2&bufferFullPlayback=0.5&files_enabled=1&file_upload=1&file_delete=1&chat_enabled=1&floodProtection=3&writeText=1&privateTextchat=<?=$privateTextchat?>&externalStream=<?=$externalStream?>&slideShow=<?=$slideShow?>&users_enabled=1&layoutCode=<?=urlencode($layoutCode)?>&fillWindow=0&filterRegex=<?=$filterRegex?>&filterReplace=<?=$filterReplace?>&loadstatus=1&debugmessage=<?=urlencode($debug)?>
+?>firstVar=fixed&server=<?=$rtmp_server?>&serverAMF=<?=$rtmp_amf?>&serverRTMFP=<?=urlencode($serverRTMFP)?>&p2pGroup=<?=$p2pGroup?>&supportRTMP=<?=$supportRTMP?>&supportP2P=<?=$supportP2P?>&alwaysRTMP=<?=$alwaysRTMP?>&alwaysP2P=<?=$alwaysP2P?>&disableBandwidthDetection=<?=$disableBandwidthDetection?>&room=<?=$room?>&welcome=<?=$welcome?>&username=<?=$username?>&msg=<?=$message?>&visitor=0&loggedin=<?=$loggedin?>&background_url=<?=urlencode("templates/consultation/background.jpg")?>&change_background=<?=$change_background?>&room_limit=30&administrator=<?=$administrator?>&showTimer=1&showCredit=1&disconnectOnTimeout=1&regularCams=<?=$regularCams?>&regularWatch=<?=$regularWatch?>&camWidth=640&camHeight=480&camFPS=15&micRate=11&camBandwidth=65536&showCamSettings=1&advancedCamSettings=1&camMaxBandwidth=131072&configureSource=1&disableVideo=0&disableSound=0&bufferLive=0.5&bufferFull=0.5&bufferLivePlayback=0.2&bufferFullPlayback=0.5&files_enabled=1&file_upload=1&file_delete=1&chat_enabled=1&floodProtection=3&writeText=1&privateTextchat=<?=$privateTextchat?>&externalStream=<?=$externalStream?>&slideShow=<?=$slideShow?>&users_enabled=1&publicVideosN=0&publicVideosAdd=<?=$publicVideosAdd?>&publicVideosMax=8&layoutCode=<?=urlencode($layoutCode)?>&fillWindow=0&filterRegex=<?=$filterRegex?>&filterReplace=<?=$filterReplace?>&loadstatus=1&debugmessage=<?=urlencode($debug)?>

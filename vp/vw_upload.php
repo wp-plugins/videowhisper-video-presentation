@@ -1,8 +1,15 @@
 <?php
+
 if ($_GET["room"]) $room=$_GET["room"];
 if ($_POST["room"]) $room=$_POST["room"];
-
 $filename=$_FILES['vw_file']['name'];
+
+include_once("incsan.php");
+sanV($room);
+if (!$room) exit;
+sanV($filename);
+if (!$filename) exit;
+
 
 //do not allow uploads to other folders
 if ( strstr($room,"/") || strstr($room,"..") ) exit;

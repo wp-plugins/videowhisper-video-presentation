@@ -8,23 +8,32 @@ ct=session time (in milliseconds)
 lt=last session time received from this script in (milliseconds)
 */
 
-$room=$_POST[r];
-$session=$_POST[s];
-$username=$_POST[u];
-
-$currentTime=$_POST[ct];
-$lastTime=$_POST[lt];
-
+	
 include("../../../../wp-config.php");
 include("inc.php");
 
+$s=$_POST['s'];
+$u=$_POST['u'];
+$r=$_POST['r'];
+$m=$_POST['m'];
+	
+$currentTime=$_POST[ct];
+$lastTime=$_POST[lt];
+
+	//sanitize variables
+	include("incsan.php");
+	sanV($s);
+	sanV($u);
+	sanV($r);
+	sanV($m, 0, 0);
+
+	//exit if no valid session name or room name
+	if (!$s) exit;
+	if (!$r) exit;
+	
 global $wpdb;
 $table_name = $wpdb->prefix . "vw_vpsessions";
 $wpdb->flush();
-
-	$s=$_POST['s'];
-	$u=$_POST['u'];
-	$r=$_POST['r'];
 
 	$ztime=time();
 

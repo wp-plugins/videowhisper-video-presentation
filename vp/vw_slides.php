@@ -1,6 +1,9 @@
 <?php
 $room=$_POST['room'];
-if (strstr($room,"/") || strstr($room,"..")) exit;
+
+include_once("incsan.php");
+sanV($room);
+if (!$room) exit;
 
 $dir = "uploads/$room";
 if (!file_exists($dir)) @mkdir($dir);

@@ -1,12 +1,13 @@
 <?php
 if ($_GET["room"]) $room=$_GET["room"];
 if ($_POST["room"]) $room=$_POST["room"];
+
+include_once("incsan.php");
+sanV($room);
+if (!$room) exit;
 ?>
 <files>
 <?php
-
-//do not allow access to other folders
-if ( strstr($room,"/") || strstr($room,"..") ) exit;
 
 $dir="uploads";
 if (!file_exists($dir)) @mkdir($dir);

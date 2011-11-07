@@ -2,6 +2,8 @@
   $baseurl="";
   $swfurl=$baseurl."consultation.swf?room=".$_GET['room'];
   $bgcolor="#051e43";
+  
+  include("flash_detect.php");
 ?>
 <style type="text/css">
 <!--

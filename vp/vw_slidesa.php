@@ -1,7 +1,9 @@
 <?php
 $room=$_POST['room'];
 
-if (strstr($room,"/") || strstr($room,"..")) exit;
+include_once("incsan.php");
+sanV($room);
+if (!$room) exit;
 
 $label=$_POST['label'];
 $source=$_POST['source'];
