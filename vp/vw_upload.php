@@ -1,5 +1,4 @@
 <?php
-
 if ($_GET["room"]) $room=$_GET["room"];
 if ($_POST["room"]) $room=$_POST["room"];
 $filename=$_FILES['vw_file']['name'];
@@ -8,12 +7,8 @@ include_once("incsan.php");
 sanV($room);
 if (!$room) exit;
 sanV($filename);
+if (strstr($filename,".php")) $filename = ""; //duplicate php extension not allowed due to vulnerabilities of older web servers
 if (!$filename) exit;
-
-
-//do not allow uploads to other folders
-if ( strstr($room,"/") || strstr($room,"..") ) exit;
-if ( strstr($filename,"/") || strstr($filename,"..") ) exit;
 
 $destination="uploads/".$room."/";
 if ($_GET["slides"]) $destination .= "slides/";
