@@ -24,9 +24,6 @@ $room=$_GET['room_name'];
 
   include_once("incsan.php");
   sanV($room);
-  if (!$room) exit;
-
-
 
 				//username
 				global $current_user;

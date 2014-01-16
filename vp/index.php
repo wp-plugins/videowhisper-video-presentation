@@ -1,6 +1,12 @@
 <?php
+
+$room=$_GET['room'];
+
+  include_once("incsan.php");
+  sanV($room);
+
   $baseurl="";
-  $swfurl=$baseurl."consultation.swf?room=".$_GET['room'];
+  $swfurl=$baseurl."consultation.swf?room=".$room;
   $bgcolor="#051e43";
   
   include("flash_detect.php");
