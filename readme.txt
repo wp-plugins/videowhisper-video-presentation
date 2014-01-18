@@ -10,10 +10,10 @@ Requires at least: 2.7
 Tested up to: 3.8
 Stable tag: trunk
 
-This video presentation web based software can easily be used with WordPress sites to implement live video presentation and consultation rooms for site users.
+Implement live video presentation and consultation rooms for moderated, 2 way, few to many, group video conferencing.
 
 == Description ==
-VideoWhisper Video Presentation is a premium high definition video communication software designed for online video consultations, interactive live presentations, trainings, webinars, coaching and online collaboration.
+VideoWhisper Video Consultation is a web based video communication solution designed for online video consultations, interactive live presentations, trainings, webinars, coaching and online collaboration.
 
 * Easy install and update as WordPress plugin
 * Widget with online rooms
@@ -22,9 +22,10 @@ VideoWhisper Video Presentation is a premium high definition video communication
 * Control access by roles, ID, email, BP Group
 * Membership site ready
 
-Latest version includes P2P groups support for better, faster video streaming and lower rtmp server bandwidth usage.
+**Moderators** control what participant is displayed on main screen (speaker) and can also add an additional participant (inquirer) to ask questions or assist.
 
-It was designed for few to many 2 way moderated video communication. Moderators control what participant is displayed on main screen (speaker) and can also add an additional participant (inquirer) to ask questions or assist. Participants can change their public status (i.e. request to speak), upload and download room files, text and video chat.
+**Participants** can change their public status (i.e. request to speak), upload and download room files, text and video chat depending on setup permissions.
+
 
 This plugin uses the WordPress username to login existing users. From plugin settings wordpress admin can configure who will be able to use this (everybody, site members, user list).
 
