@@ -21,21 +21,23 @@ VideoWhisper Video Consultation is a web based video communication solution desi
 * BuddyPress group rooms
 * Control access by roles, ID, email, BP Group
 * Membership site ready
+* Transcoding for iOS HTML5 HLS
 
 **Moderators** control what participant is displayed on main screen (speaker) and can also add an additional participant (inquirer) to ask questions or assist.
 
 **Participants** can change their public status (i.e. request to speak), upload and download room files, text and video chat depending on setup permissions.
-
 
 This plugin uses the WordPress username to login existing users. From plugin settings wordpress admin can configure who will be able to use this (everybody, site members, user list).
 
 Includes a widget that displays active rooms (with number of participants) and presentation access link.
 A Video Presentation page is added to the website and can be disabled from settings.
 
-There is a settings page with multiple parameters and permissions (what users can access - all, only members, predefined list).
+There is a **settings** page with multiple parameters and permissions (what users can access - all, only members, predefined list of users and roles). Can be used to setup membership sites.
 
-BuddyPress integration: If BuddyPress is installed this will add a Video Presentation tab to the group, where users can video chat and watch the presentations realtime in group room.
+**BuddyPress** integration: If BuddyPress is installed this will add a Video Presentation tab to the group, where users can video chat and watch the presentations realtime in group room.
 Only group admins have moderator and presentation privileges.
+
+**Transcoding**: If enabled, moderator can transcode video of any participant as room video that shows when room is accessed from iOS.
 
 Special requirements: This plugin has requirements beyond regular WordPress hosting specifications: a RTMP host is needed for persistent connections to manage live interactions and streaming. More details about this, including solutions are provided on the Installation section pages.
 
@@ -48,8 +50,9 @@ Special requirements: This plugin has requirements beyond regular WordPress host
 
 == Screenshots ==
 1. Live Video Presentation
-2. Toolbar Buttons
+2. Toolbar Buttons (manage panels and functionality)
 3. External Video Encoder
+4. Transcoding a stream for iOS HLS
 
 == Desktop Sharing / Screen Broadcasting ==
 If your users want to broadcast their screen (when playing a game, using a program, tutoring various computer skills) they can do that easily just by using a screen sharing driver that simulates a webcam from desktop contents. Read more on http://www.videochat-scripts.com/screen-sharing-with-flash-video-chat-software/ . 
@@ -59,13 +62,15 @@ If your users want to broadcast their screen (when playing a game, using a progr
 * Application Homepage : http://www.videowhisper.com/?p=Video+Consultation
 
 == Demo ==
-* See BuddyPress integration live on http://livon.tv/
-* See WordPress integration live on http://www.videochat-scripts.com/video-presentation/
+* See WordPress (w. BuddyPress) integration live on http://www.videochat-scripts.com/video-presentation/
 
 == Extra ==
 More information, the latest updates, other plugins and non-WordPress editions can be found at http://www.videowhisper.com/ .
 
 == Changelog ==
+
+= 3.31.4 =
+* Transcoding for iOS HLS playback support
 
 = 3.31 =
 * Integrated latest application version 3.31

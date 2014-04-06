@@ -51,6 +51,7 @@ $group = new BP_Groups_Group( $group_id );
 $group_member = $group->is_member;
 
 $group_admin=0;
+if ($group->admins) if (is_array($group->admins))  
 foreach ($group->admins as $usr) if ( $usr->user_login == $current_user->user_login ) $group_admin=1;
 
 if ($group_admin) $administrator=1;
@@ -67,8 +68,8 @@ if ($group_admin) $administrator=1;
 }
 
 //username
-if ($current_user->$userName) $username=urlencode($current_user->$userName);
-$username=preg_replace("/[^0-9a-zA-Z_]/","-",$username);
+//if ($current_user->$userName) $username=urlencode($current_user->$userName);
+//$username=preg_replace("/[^0-9a-zA-Z_]/","-",$username);
 
 $loggedin=0;
 $msg="";
@@ -123,28 +124,30 @@ if (!$room && !$visitor)
 }
  else if (!$room) $room = $options['lobbyRoom'];  //visitor can't create room
 	
+//if room name == username -> administrator	
+if (!$options['disableModeratorByName']) 
+if ($room == $username) $administrator = 1;
+	
+if (inList($userkeys, $options['moderatorList'])) $administrator = 1;
+
+$parameters = html_entity_decode($options['parameters']);
+
 if ($administrator)
 {
-$change_background=1;
-$regularCams=1;
-$regularWatch=1;
-$privateTextchat=1;
-$externalStream=1;
-$slideShow=1;
-$publicVideosAdd=1;
+
+$parameters = html_entity_decode($options['parametersAdmin']);
+//&change_background=0&administrator=0&regularCams=0&regularWatch=0&privateTextchat=0&externalStream=0&slideShow=0&publicVideosAdd=<0
+
 $extra_info = "<BR><font color=\"#3CA2DE\">&#187;</font> You are moderator in this video presentation room. You can set any user as main speaker or inquirer on public video panels, show presentation slides, kick users.";
 }
 
 $debug="";
-
-$layoutCode=<<<layoutEND
-layoutEND;
 
 //replace bad words or expression
 $filterRegex=urlencode("(?i)(fuck|cunt)(?-i)");
 $filterReplace=urlencode(" ** ");
 
 //message
-$welcome=urlencode("Welcome to $room!<BR><font color=\"#3CA2DE\">&#187;</font> Click top bar icons to enable/disable features and panels. <BR><font color=\"#3CA2DE\">&#187;</font> Click any participant from users list for more options depending on your permissions. <BR><font color=\"#3CA2DE\">&#187;</font> Try pasting urls, youtube movie urls, picture urls, emails, twitter accounts as @videowhisper in your text chat. <BR><font color=\"#3CA2DE\">&#187;</font> Download daily chat logs from file list. $extra_info");
+$welcome=urlencode( html_entity_decode($options['welcome']) . $extra_info);
 
-?>firstVar=fixed&server=<?=$rtmp_server?>&serverAMF=<?=$rtmp_amf?>&serverRTMFP=<?=urlencode($serverRTMFP)?>&p2pGroup=<?=$p2pGroup?>&supportRTMP=<?=$supportRTMP?>&supportP2P=<?=$supportP2P?>&alwaysRTMP=<?=$alwaysRTMP?>&alwaysP2P=<?=$alwaysP2P?>&disableBandwidthDetection=<?=$disableBandwidthDetection?>&room=<?=$room?>&welcome=<?=$welcome?>&username=<?=$username?>&msg=<?=$message?>&visitor=0&loggedin=<?=$loggedin?>&background_url=<?=urlencode("templates/consultation/background.jpg")?>&change_background=<?=$change_background?>&room_limit=30&administrator=<?=$administrator?>&showTimer=1&showCredit=1&disconnectOnTimeout=1&regularCams=<?=$regularCams?>&regularWatch=<?=$regularWatch?>&camWidth=<?php echo $camRes[0];?>&camHeight=<?php echo $camRes[1];?>&camFPS=<?php echo $options['camFPS']?>&camBandwidth=<?php echo $camBandwidth?>&camMaxBandwidth=<?php echo $camMaxBandwidth?>&videoCodec=<?=$options['videoCodec']?>&codecProfile=<?=$options['codecProfile']?>&codecLevel=<?=$options['codecLevel']?>&soundCodec=<?=$options['soundCodec']?>&soundQuality=<?=$options['soundQuality']?>&micRate=<?=$options['micRate']?>&showCamSettings=1&advancedCamSettings=1&configureSource=1&disableVideo=0&disableSound=0&bufferLive=0.5&bufferFull=0.5&bufferLivePlayback=0.2&bufferFullPlayback=0.5&files_enabled=1&file_upload=1&file_delete=1&chat_enabled=1&floodProtection=3&writeText=1&privateTextchat=<?=$privateTextchat?>&externalStream=<?=$externalStream?>&slideShow=<?=$slideShow?>&users_enabled=1&publicVideosN=0&publicVideosAdd=<?=$publicVideosAdd?>&publicVideosMax=8&layoutCode=<?=urlencode($layoutCode)?>&fillWindow=0&filterRegex=<?=$filterRegex?>&filterReplace=<?=$filterReplace?>&loadstatus=1&debugmessage=<?=urlencode($debug)?>
+?>firstVar=fixed&server=<?=$rtmp_server?>&serverAMF=<?=$rtmp_amf?>&serverRTMFP=<?=urlencode($serverRTMFP)?>&p2pGroup=<?=$p2pGroup?>&supportRTMP=<?=$supportRTMP?>&supportP2P=<?=$supportP2P?>&alwaysRTMP=<?=$alwaysRTMP?>&alwaysP2P=<?=$alwaysP2P?>&disableBandwidthDetection=<?=$disableBandwidthDetection?>&room=<?=$room?>&welcome=<?=$welcome?>&username=<?=$username?>&msg=<?=$message?>&visitor=0&loggedin=<?=$loggedin?>&background_url=<?=urlencode("templates/consultation/background.jpg")?>&camWidth=<?php echo $camRes[0];?>&camHeight=<?php echo $camRes[1];?>&camFPS=<?php echo $options['camFPS']?>&camBandwidth=<?php echo $camBandwidth?>&camMaxBandwidth=<?php echo $camMaxBandwidth?>&videoCodec=<?=$options['videoCodec']?>&codecProfile=<?=$options['codecProfile']?>&codecLevel=<?=$options['codecLevel']?>&soundCodec=<?=$options['soundCodec']?>&soundQuality=<?=$options['soundQuality']?>&micRate=<?=$options['micRate']?>&layoutCode=<?=urlencode(html_entity_decode($options['layoutCode']))?>&filterRegex=<?=$filterRegex?>&filterReplace=<?=$filterReplace?>&loadstatus=1<?php echo $parameters; ?>&debugmessage=<?=urlencode($debug)?>
