@@ -3,7 +3,7 @@
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Description: Video Presentation
-Version: 3.31.4	
+Version: 3.31.5	
 Author: VideoWhisper.com
 Author URI: http://www.videowhisper.com/
 Contributors: videowhisper, VideoWhisper.com
@@ -228,7 +228,7 @@ if ($atts['link']) $htmlCode .= "<a class='button' target='_top' href='".plugin_
 
 $options = get_option('VWvideoPresentationOptions');
 
-if (!$options['disableTranscoding'])
+if (!$options['disableTranscoder'])
 {
 //moderator?
 $userName =  $options['userName']; if (!$userName) $userName='user_nicename';
@@ -652,7 +652,7 @@ a {
 				'disableModeratorByName' => '0',
 				'moderatorList' => 'Super Admin, Administrator, Editor',
 
-                'disableTranscoding' => '0',
+                'disableTranscoder' => '0',
                 'httpstreamer' => 'http://localhost:1935/videowhisper-x/',
                 'ffmpegPath' => '/usr/local/bin/ffmpeg',
                 
@@ -805,9 +805,9 @@ if ($det) echo "detected ($outd)"; else echo "missing: please configure and inst
 </select>
 <h4>Always do RTMP Streaming</h4>
 <p>Enable this if you want all streams to be published to server, no matter if there are registered subscribers or not (in example if you're using server side video archiving and need all streams published for recording).</p>
-<select name="alwaystRTMP" id="alwaystRTMP">
-  <option value="0" <?=$options['alwaystRTMP']?"":"selected"?>>No</option>
-  <option value="1" <?=$options['alwaystRTMP']?"selected":""?>>Yes</option>
+<select name="alwaysRTMP" id="alwaysRTMP">
+  <option value="0" <?=$options['alwaysRTMP']?"":"selected"?>>No</option>
+  <option value="1" <?=$options['alwaysRTMP']?"selected":""?>>Yes</option>
 </select>
 <h4>Support P2P Streaming</h4>
 <select name="supportP2P" id="supportP2P">
