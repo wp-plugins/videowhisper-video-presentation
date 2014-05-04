@@ -101,17 +101,15 @@ switch ($canAccess)
 	break;
 	case "members":
 		if ($username) $loggedin=1;
-		else $msg=urlencode("<a href=\"/\">Please login first or register an account if you don't have one! Click here to return to website.</a>");
+		else $msg="<a href=\"/\">Please login first or register an account if you don't have one! Click here to return to website.</a>";
 	break;
 	case "list";
 		if ($username)
 			if (inList($userkeys, $accessList)) $loggedin=1;
-			else $msg=urlencode("<a href=\"/\">$username, you are not in the video presentation access list.</a>");
-		else $msg=urlencode("<a href=\"/\">Please login first or register an account if you don't have one! Click here to return to website.</a>");
+			else $msg="<a href=\"/\">$username, you are not in the video presentation access list.</a>";
+		else $msg="<a href=\"/\">Please login first or register an account if you don't have one! Click here to return to website.</a>";
 	break;
 }
-
-
 
 if (!$room && !$visitor) 
 {
@@ -123,11 +121,32 @@ if (!$room && !$visitor)
 	else $room = $options['lobbyRoom']; //or go to default
 }
  else if (!$room) $room = $options['lobbyRoom'];  //visitor can't create room
-	
+
+
+global $wpdb;           
+$table_name3 = $wpdb->prefix . "vw_vprooms";
+$wpdb->flush();
+
+//room owner?
+$rm = $wpdb->get_row("SELECT owner FROM $table_name3 where name='$room'");
+if ($rm) if ($rm->owner == $current_user->ID) $administrator=1;	
+
+if (!$options['anyRoom']) //room must exist
+if ($room != $options['lobbyRoom'] || $options['landingRoom'] !='lobby') //not lobby
+{
+ 
+			$wpdb->flush();
+ 			$rm = $wpdb->get_row("SELECT count(id) as no FROM $table_name3 where name='$room'");
+ 			if (!$rm->no)
+ 			{
+	 			$msg="Room $room does not exist!";
+	 			$loggedin=0;
+ 			}
+}
+ 	
+ 		
 //if room name == username -> administrator	
-if (!$options['disableModeratorByName']) 
-if ($room == $username) $administrator = 1;
-	
+if (!$options['disableModeratorByName']) if ($room == $username) $administrator = 1;
 if (inList($userkeys, $options['moderatorList'])) $administrator = 1;
 
 $parameters = html_entity_decode($options['parameters']);
@@ -150,4 +169,4 @@ $filterReplace=urlencode(" ** ");
 //message
 $welcome=urlencode( html_entity_decode($options['welcome']) . $extra_info);
 
-?>firstVar=fixed&server=<?=$rtmp_server?>&serverAMF=<?=$rtmp_amf?>&serverRTMFP=<?=urlencode($serverRTMFP)?>&p2pGroup=<?=$p2pGroup?>&supportRTMP=<?=$supportRTMP?>&supportP2P=<?=$supportP2P?>&alwaysRTMP=<?=$alwaysRTMP?>&alwaysP2P=<?=$alwaysP2P?>&disableBandwidthDetection=<?=$disableBandwidthDetection?>&room=<?=$room?>&welcome=<?=$welcome?>&username=<?=$username?>&msg=<?=$message?>&visitor=0&loggedin=<?=$loggedin?>&background_url=<?=urlencode("templates/consultation/background.jpg")?>&camWidth=<?php echo $camRes[0];?>&camHeight=<?php echo $camRes[1];?>&camFPS=<?php echo $options['camFPS']?>&camBandwidth=<?php echo $camBandwidth?>&camMaxBandwidth=<?php echo $camMaxBandwidth?>&videoCodec=<?=$options['videoCodec']?>&codecProfile=<?=$options['codecProfile']?>&codecLevel=<?=$options['codecLevel']?>&soundCodec=<?=$options['soundCodec']?>&soundQuality=<?=$options['soundQuality']?>&micRate=<?=$options['micRate']?>&layoutCode=<?=urlencode(html_entity_decode($options['layoutCode']))?>&filterRegex=<?=$filterRegex?>&filterReplace=<?=$filterReplace?>&loadstatus=1<?php echo $parameters; ?>&debugmessage=<?=urlencode($debug)?>
+?>firstVar=fixed&server=<?=$rtmp_server?>&serverAMF=<?=$rtmp_amf?>&serverRTMFP=<?=urlencode($serverRTMFP)?>&p2pGroup=<?=$p2pGroup?>&supportRTMP=<?=$supportRTMP?>&supportP2P=<?=$supportP2P?>&alwaysRTMP=<?=$alwaysRTMP?>&alwaysP2P=<?=$alwaysP2P?>&disableBandwidthDetection=<?=$disableBandwidthDetection?>&room=<?=$room?>&welcome=<?=$welcome?>&username=<?=$username?>&msg=<?=urlencode($msg)?>&visitor=0&loggedin=<?=$loggedin?>&background_url=<?=urlencode( site_url() . "/wp-content/plugins/videowhisper-video-presentation/vp/templates/consultation/background.jpg")?>&camWidth=<?php echo $camRes[0];?>&camHeight=<?php echo $camRes[1];?>&camFPS=<?php echo $options['camFPS']?>&camBandwidth=<?php echo $camBandwidth?>&camMaxBandwidth=<?php echo $camMaxBandwidth?>&videoCodec=<?=$options['videoCodec']?>&codecProfile=<?=$options['codecProfile']?>&codecLevel=<?=$options['codecLevel']?>&soundCodec=<?=$options['soundCodec']?>&soundQuality=<?=$options['soundQuality']?>&micRate=<?=$options['micRate']?>&layoutCode=<?=urlencode(html_entity_decode($options['layoutCode']))?>&filterRegex=<?=$filterRegex?>&filterReplace=<?=$filterReplace?>&loadstatus=1<?php echo $parameters; ?>&debugmessage=<?=urlencode($debug)?>

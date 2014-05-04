@@ -1,5 +1,6 @@
 <?php
 $room=$_GET['room'];
+if (!$room) $room=$_GET['r'];
 
   include_once("incsan.php");
   sanV($room);

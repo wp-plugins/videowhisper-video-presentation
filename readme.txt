@@ -7,7 +7,7 @@ Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Donate link: http://www.videowhisper.com/?p=Invest
 Tags: video, presentation, consultation, live, conference, sharing, file, chat, webcam, BuddyPress, flash, fms, red5, wowza, audio, video chat, videochat, widget, plugin, media, av, channel, sidebar, cam, group, groups, tab, slide, show, slideshow, moderator, administrator, speaker, encoder, e-learning, P2P, webinar, collaboration
 Requires at least: 2.7
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: trunk
 
 Implement live video presentation and consultation rooms for moderated, 2 way, few to many, group video conferencing.
@@ -22,6 +22,8 @@ VideoWhisper Video Consultation is a web based video communication solution desi
 * Control access by roles, ID, email, BP Group
 * Membership site ready
 * Transcoding for iOS HTML5 HLS
+* Presentation post type (to easily control access per room)
+* Frontend room management
 
 **Moderators** control what participant is displayed on main screen (speaker) and can also add an additional participant (inquirer) to ask questions or assist.
 
@@ -68,6 +70,10 @@ If your users want to broadcast their screen (when playing a game, using a progr
 More information, the latest updates, other plugins and non-WordPress editions can be found at http://www.videowhisper.com/ .
 
 == Changelog ==
+
+= 3.31.8 =
+* Frontend room management
+* Presentation post type
 
 = 3.31.4 =
 * Transcoding for iOS HLS playback support
