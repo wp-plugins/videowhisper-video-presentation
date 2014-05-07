@@ -3,7 +3,7 @@
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Description: Video Presentation
-Version: 3.31.11
+Version: 3.31.12
 Author: VideoWhisper.com
 Author URI: http://www.videowhisper.com/
 Contributors: videowhisper, VideoWhisper.com
@@ -945,9 +945,9 @@ HTMLCODE;
 
 <tr><td>Presentation Category</td><td>'.$categories.'</td></tr>
 <tr><td>Presentation Comments</td><td>'.$commentsCode.'</td></tr>
+<tr><td colspan=2><input type="submit" name="button" id="button" value="Save" />
+		<input type="hidden" name="editRoom" id="editRoom" value="'.$editRoom.'" /></td></tr>
 	</table>
-		<input type="submit" name="button" id="button" value="Save" />
-		<input type="hidden" name="editRoom" id="editRoom" value="'.$editRoom.'" />
 		</form>
 		';
 				} elseif ($rmn->no > $options['maxRooms'])
@@ -1545,13 +1545,13 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 
 			case 'sell':
 ?>
-<h3>myCred</h3>
+<h3>myCRED</h3>
 <p><a target="_mycred" href="https://wordpress.org/plugins/mycred/">myCRED</a> is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website. The Buy Content add-on allows you to sell any publicly available post types, including video presentation posts created by this plugin. You can select to either charge users to view the content or pay the post's author either the whole sum or a percentage.<p>
-<p>myCRED_Sell_Content_Module: <?php
-				if (class_exists( 'myCRED_Sell_Content_Module' ) ) echo 'Detected'; else echo 'Not detected. Please install and activate myCRED with Sell Content module!';
+<p>myCRED Sell Content Module: <?php
+				if (class_exists( 'myCRED_Sell_Content_Module' ) ) echo 'Detected'; else echo 'Not detected. Please install and activate myCRED with <a href="admin.php?page=myCRED_page_addons">Sell Content addon</a>!';
 
 				?> </p>
-
+<p>Add "presentation" to <a href="admin.php?page=myCRED_page_settings">myCRED sesttings</a> > Sell content > Post Types. Also myCRED <a href="admin.php?page=myCRED_page_addons">buyCRED addon</a> should be enabled and at least 1 <a href="admin.php?page=myCRED_page_gateways"> payment gateway</a> configured for users to be able to buy credits.  </p>
 <h4>Sell Content Setup Interface</h4>
 <select name="myCred" id="myCred">
   <option value="0" <?php echo $options['myCred']=='0'?"selected":""?>>No</option>
