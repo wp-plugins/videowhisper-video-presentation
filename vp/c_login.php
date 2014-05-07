@@ -144,8 +144,8 @@ if ($room != $options['lobbyRoom'] || $options['landingRoom'] !='lobby') //not l
  			}
 }
  
-//paid room?
-if ($options['myCred'])
+//paid room and not moderator?
+if ($options['myCred'] && !$administrator)
 {
 
 $postID = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_name = '" . sanitize_file_name($room) . "' and post_type='presentation' LIMIT 0,1" );
