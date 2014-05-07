@@ -5,12 +5,12 @@ Author URI: http://www.videowhisper.com
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Donate link: http://www.videowhisper.com/?p=Invest
-Tags: video, presentation, consultation, live, conference, sharing, file, chat, webcam, BuddyPress, flash, fms, red5, wowza, audio, video chat, videochat, widget, plugin, media, av, channel, sidebar, cam, group, groups, tab, slide, show, slideshow, moderator, administrator, speaker, encoder, e-learning, P2P, webinar, collaboration
+Tags: video, presentation, consultation, live, conference, sharing, file, chat, webcam, BuddyPress, flash, fms, red5, wowza, audio, video chat, videochat, widget, plugin, media, av, channel, sidebar, cam, group, groups, tab, slide, show, slideshow, moderator, administrator, speaker, encoder, e-learning, P2P, webinar, collaboration, membership, paid, myCred, credits, transcoding, iPhone, iPad
 Requires at least: 2.7
 Tested up to: 3.9
 Stable tag: trunk
 
-Implement live video presentation and consultation rooms for moderated, 2 way, few to many, group video conferencing.
+Implement live video presentation and consultation rooms for moderated, 2 way, few to many, group video conferencing. Sell access to rooms.
 
 == Description ==
 VideoWhisper Video Consultation is a web based video communication solution designed for online video consultations, interactive live presentations, trainings, webinars, coaching and online collaboration.
@@ -24,8 +24,10 @@ VideoWhisper Video Consultation is a web based video communication solution desi
 * Transcoding for iOS HTML5 HLS
 * Presentation post type (to easily control access per room)
 * Frontend room management
+* Setup paid rooms with myCred integration
 
 **Moderators** control what participant is displayed on main screen (speaker) and can also add an additional participant (inquirer) to ask questions or assist.
+Selected roles can create free/paid rooms and are automatically moderators of these rooms.
 
 **Participants** can change their public status (i.e. request to speak), upload and download room files, text and video chat depending on setup permissions.
 
@@ -55,6 +57,7 @@ Special requirements: This plugin has requirements beyond regular WordPress host
 2. Toolbar Buttons (manage panels and functionality)
 3. External Video Encoder
 4. Transcoding a stream for iOS HLS
+5. Frontend setup of Free/Paid rooms
 
 == Desktop Sharing / Screen Broadcasting ==
 If your users want to broadcast their screen (when playing a game, using a program, tutoring various computer skills) they can do that easily just by using a screen sharing driver that simulates a webcam from desktop contents. Read more on http://www.videochat-scripts.com/screen-sharing-with-flash-video-chat-software/ . 
@@ -70,6 +73,9 @@ If your users want to broadcast their screen (when playing a game, using a progr
 More information, the latest updates, other plugins and non-WordPress editions can be found at http://www.videowhisper.com/ .
 
 == Changelog ==
+
+= 3.31.11 =
+* myCred integration to setup paid rooms
 
 = 3.31.8 =
 * Frontend room management

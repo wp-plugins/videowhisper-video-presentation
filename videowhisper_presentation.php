@@ -3,7 +3,7 @@
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Description: Video Presentation
-Version: 3.31.8
+Version: 3.31.11
 Author: VideoWhisper.com
 Author URI: http://www.videowhisper.com/
 Contributors: videowhisper, VideoWhisper.com
@@ -14,7 +14,6 @@ if (!class_exists("VWvideoPresentation"))
 
 	class VWvideoPresentation
 	{
-		private $mycred_mod;
 
 		function VWvideoPresentation()
 			{ //constructor
@@ -31,8 +30,8 @@ if (!class_exists("VWvideoPresentation"))
 			$plugin = plugin_basename(__FILE__);
 			add_filter("plugin_action_links_$plugin",  array('VWvideoPresentation','settings_link') );
 
-            add_filter("the_content", array('VWvideoPresentation','presentation_page'));
-            
+			add_filter("the_content", array('VWvideoPresentation','presentation_page'));
+
 			wp_register_sidebar_widget('videoPresentationWidget','VideoWhisper Presentation', array('VWvideoPresentation', 'widget') );
 
 
@@ -79,7 +78,7 @@ if (!class_exists("VWvideoPresentation"))
 		  KEY `status` (`status`),
 		  KEY `type` (`type`),
 		  KEY `room` (`room`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Video Whisper: Sessions - 2009@videowhisper.com' AUTO_INCREMENT=1 ;
+		) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Video Whisper: Sessions - 2009@videowhisper.com' AUTO_INCREMENT=1;
 
 		DROP TABLE IF EXISTS `$table_name3`;
 		CREATE TABLE `$table_name3` (
@@ -230,20 +229,20 @@ if (!class_exists("VWvideoPresentation"))
 			);
 			register_post_type( 'presentation', $args );
 
-            flush_rewrite_rules();
+			flush_rewrite_rules();
 		}
 
-        function presentation_page($content)
-        {
-        
-         if (!is_single()) return $content;
-         $postID = get_the_ID() ;
-         if (get_post_type( $postID ) != 'presentation') return $content;
+		function presentation_page($content)
+		{
 
-        $room = sanitize_file_name(get_the_title($postID));
-        
-        $addCode =  "[videowhisperconsultation room=\"$room\"]";
-        return $addCode . $content;
+			if (!is_single()) return $content;
+			$postID = get_the_ID() ;
+			if (get_post_type( $postID ) != 'presentation') return $content;
+
+			$room = sanitize_file_name(get_the_title($postID));
+
+			$addCode =  "[videowhisperconsultation room=\"$room\"]";
+			return $addCode . $content;
 		}
 
 		function widgetContent()
@@ -687,6 +686,9 @@ HTMLCODE;
 				return $htmlCode;
 			}
 
+			//setup price
+			$myCred =  $options['myCred'] && VWvideoPresentation::inList($userkeys,$options['canSell']);
+
 			$this_page    =   get_permalink();
 
 			if ($loggedin)
@@ -710,7 +712,6 @@ HTMLCODE;
 					}
 
 					//room
-
 					$sql = $wpdb->prepare("DELETE FROM $table_name3 where owner='".$current_user->ID."' AND id='%d'", array($delid));
 					$wpdb->query($sql);
 					$wpdb->flush();
@@ -736,6 +737,17 @@ HTMLCODE;
 
 					$category = (int) $_POST['newcategory'];
 
+					$newPrice = round($_POST['price'],2);
+
+					if ($myCred && $newPrice)
+					{
+						$mCa = array(
+							'status'       => 'enabled',
+							'price'        => round($_POST['price'],2),
+							'button_label' => 'Buy Now', // default button label
+							'expire'       => 0 // default no expire
+						);
+					}
 
 					$ztime=time();
 
@@ -750,7 +762,7 @@ HTMLCODE;
 
 						if ($editID) //edit
 							{
-			
+
 							$rdata = $wpdb->get_row("SELECT * FROM $table_name3 where id='$editID'");
 							if ($rdata)
 							{
@@ -767,15 +779,22 @@ HTMLCODE;
 								else $htmlCode .= "<div class='update'>Presentation $room was created!</div>";
 
 								$postID = wp_insert_post($post);
-								if ($postID) wp_set_post_categories($postID, array($category));
+								if ($postID)
+								{
+									wp_set_post_categories($postID, array($category));
+									if ($myCred && $newPrice) update_post_meta($postID, 'myCRED_sell_content', $mCa);
+									else delete_post_meta($postID, 'myCRED_sell_content');
+								}
 
 								$sql="UPDATE `$table_name3` set name = '$room', `type`='".((int) $_POST['type'])."' where id ='$editID' AND owner='".$current_user->ID."'";
 								$wpdb->query($sql);
+
 
 							} else $htmlCode .=  "Room $editID not found!";
 
 						} else //new
 							{
+
 							if ($rmn->no < $options['maxRooms'])
 							{
 								$sql=$wpdb->prepare("INSERT INTO `$table_name3` ( `name`, `owner`, `sdate`, `edate`, `status`, `type`) VALUES ('%s', '".$current_user->ID."', '$ztime', '0', 1, '%d')",array($room, $_POST['type']));
@@ -783,7 +802,14 @@ HTMLCODE;
 								$wpdb->flush();
 								$htmlCode .=  "<div class='update'>Room '$room' was created.</div>";
 								$postID = wp_insert_post($post);
-								if ($postID) wp_set_post_categories($postID, array($category));
+								if ($postID)
+								{
+									wp_set_post_categories($postID, array($category));
+									if ($myCred && $newPrice) update_post_meta($postID, 'myCRED_sell_content', $mCa);
+									else delete_post_meta($postID, 'myCRED_sell_content');
+								}
+
+
 
 								$rmn = $wpdb->get_row("SELECT count(id) as no FROM $table_name3 where owner='".$current_user->ID."'");
 
@@ -798,13 +824,16 @@ HTMLCODE;
 					}
 				}
 
-				//list
+
+				//list rooms
 				$wpdb->flush();
 
 				$sql = "SELECT * FROM $table_name3 where owner='".$current_user->ID."'";
 				$rooms=$wpdb->get_results($sql);
 
 				$htmlCode .=  "<H3>My Rooms (" . $rmn->no . '/' . $options['maxRooms'].")</H3>";
+				$table_nameC = $wpdb->prefix . "myCRED_log";
+
 				if (count($rooms))
 				{
 					$htmlCode .=  "<table>";
@@ -815,6 +844,31 @@ HTMLCODE;
 						$rm=$wpdb->get_row("SELECT count(*) as no, group_concat(username separator ' <BR> ') as users, room as room FROM `$table_name` where status='1' and type='1' AND room='".$rd->name."' GROUP BY room");
 
 						$htmlCode .=  "<tr><td><a href='" . VWvideoPresentation::roomURL($rd->name)."'><B>".$rd->name."</B></a></td> <td>" . VWvideoPresentation::roomURL($rd->name) ."</td> <td>".($rm->no>0?$rm->users:'0')."</td><td>".($rd->type==1?'Public':($rd->type==2?"Private":$rd->type))."</td> <td><a href='".$this_page.(strstr($this_page,'?')?'&':'?')."edit=".$rd->id."'>Edit</a> | <a href='".$this_page.(strstr($this_page,'?')?'&':'?')."delete=".$rd->id."'>Delete</a></td> </tr>";
+
+						if ($myCred)
+						{
+							$postID = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_name = '" . sanitize_file_name($rd->name) . "' and post_type='presentation' LIMIT 0,1" );
+
+							if ($postID)
+							{
+								$buyers = $wpdb->get_col( $sql = "SELECT DISTINCT user_id FROM {$table_nameC} WHERE ref = 'buy_content' AND ref_id = {$postID} AND creds < 0" );
+								$buyerList = '';
+								if ($buyers)
+									foreach ($buyers as $buyerID)
+									{
+										if (function_exists('bp_core_get_userlink')) $buyerlink = bp_core_get_userlink($buyerID);
+										else {
+											$buyer = get_userdata($buyerID);
+											$buyerlink = '<a href="'.$buyer->user_url.'">'.$buyer->user_nicename . '</a>';
+										}
+
+										$buyerList .= ($buyerList?', ':'') . $buyerlink ;
+									}
+
+								if ($buyerList) $htmlCode .=  "<tr><th>Clients</th><td colspan='4'>$buyerList</td></tr>";
+							}
+
+						}
 					}
 					$htmlCode .=  "</table>";
 
@@ -823,6 +877,7 @@ HTMLCODE;
 
 
 				$newName = 'Room_'.base_convert((time()-1225000000),10,36);
+				$newPrice = '0.00';
 
 				if ($editid=(int) $_GET['edit'])
 				{
@@ -832,6 +887,9 @@ HTMLCODE;
 						$newName = $rdata->name;
 						$newType = $rdata->type;
 						$editRoom = $editid;
+
+						$newNameL = "#$editid $newName";
+
 
 						$postID = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_name = '" . sanitize_file_name($newName) . "' and post_type='presentation' LIMIT 0,1" );
 
@@ -846,9 +904,18 @@ HTMLCODE;
 
 							$cats = wp_get_post_categories( $postID);
 							if (count($cats)) $newCat = array_pop($cats);
+
+							if ($myCred)
+							{
+								$mCa = get_post_meta( $postID, 'myCRED_sell_content', true );
+								$newPrice = $mCa['price'];
+							}
 						}
 
 					} else $htmlCode .=  "Room $editid not found!";
+				} else
+				{
+					$newNameL = 'New';
 				}
 
 				$commentsCode = '';
@@ -865,22 +932,25 @@ HTMLCODE;
 				$categories = wp_dropdown_categories('show_count=1&echo=0&name=newcategory&hide_empty=0&selected=' . $newCat);
 				//create form
 				if ($editRoom > 0 || $rmn->no < $options['maxRooms'])
-					$htmlCode .=  '<h3>Setup Presentation</h3><form method="post" action="' . $this_page .'"  name="adminForm">
+				{
+					$htmlCode .=  '<h3>Setup Presentation ('.$newNameL.')</h3><form method="post" action="' . $this_page .'"  name="adminForm">
 <table class="g-input" width="500px">
-<tr><td>Room name</td><td><input name="room" type="text" id="room" value="'.$newName.'" size="20" maxlength="64" /> <input type="submit" name="button" id="button1" value="Setup" /></td></tr>
+<tr><td>Room name</td><td><input name="room" type="text" id="room" value="'.$newName.'" size="20" maxlength="64" /> <input type="submit" name="button" id="button1" value="Save" /></td></tr>';
 
-<tr><td>Online</td><td>'.$typeCode.' All your rooms will be accessible for you in presentation room list. Public rooms will be listed for everybody by widget when online.</td></tr>
+					if ($myCred) $htmlCode .=  '<tr><td>Sell Price</td><td><input name="price" type="text" id="price" value="'.$newPrice.'" size="6" maxlength="6" />Users need to pay this price to access. Set 0 for free access.</td></tr>';
 
-<tr><td>Presentation Description</td><td><textarea rows=4 name="description" id="description">'.$newDescription.'</textarea></td></tr>
+					$htmlCode .=  '<tr><td>Online</td><td>'.$typeCode.' All your rooms will be accessible for you in presentation room list. Public rooms will be listed for everybody by widget when online.</td></tr>
+
+<tr><td>Presentation Description</td><td><textarea rows=4 name="description" id="description">'.$newDescription.'</textarea>Shows under application container.</td></tr>
 
 <tr><td>Presentation Category</td><td>'.$categories.'</td></tr>
 <tr><td>Presentation Comments</td><td>'.$commentsCode.'</td></tr>
 	</table>
-		  <input type="submit" name="button" id="button" value="Setup" />
+		<input type="submit" name="button" id="button" value="Save" />
 		<input type="hidden" name="editRoom" id="editRoom" value="'.$editRoom.'" />
 		</form>
 		';
-				elseif ($rmn->no > $options['maxRooms'])
+				} elseif ($rmn->no > $options['maxRooms'])
 					$htmlCode .= "You can't setup new rooms because you reached room limit (".$options['maxRooms'].").";
 
 			}
@@ -1094,6 +1164,9 @@ a {
 				'accessLink' => 'site',
 				'anyRoom' => '1',
 
+				'myCred' => '1',
+				'canSell' =>'Super Admin, Administrator, Editor, Author',
+
 				'disableTranscoder' => '0',
 				'httpstreamer' => 'http://localhost:1935/videowhisper-x/',
 				'ffmpegPath' => '/usr/local/bin/ffmpeg',
@@ -1172,6 +1245,7 @@ a {
 	<a href="<?php echo $_SERVER["REQUEST_URI"]; ?>&tab=integration" class="nav-tab <?php echo $active_tab=='integration'?'nav-tab-active':''; ?>">Integration</a>
    <a href="<?php echo $_SERVER["REQUEST_URI"]; ?>&tab=moderators" class="nav-tab <?php echo $active_tab=='moderators'?'nav-tab-active':''; ?>">Moderators</a>
     <a href="<?php echo $_SERVER["REQUEST_URI"]; ?>&tab=participants" class="nav-tab <?php echo $active_tab=='participants'?'nav-tab-active':''; ?>">Participants</a>
+   <a href="<?php echo $_SERVER["REQUEST_URI"]; ?>&tab=sell" class="nav-tab <?php echo $active_tab=='sell'?'nav-tab-active':''; ?>">Sell</a>
 </h2>
 
 <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
@@ -1181,7 +1255,7 @@ a {
 			{
 			case 'server':
 ?>
-<h4>Server and Streaming Settings</h3>
+<h3>Server and Streaming Settings</h3>
 <h4>RTMP Address</h4>
 <p>To run this, make sure your hosting environment meets all <a href="http://www.videowhisper.com/?p=Requirements" target="_blank">requirements</a>.  If you don't have a <a href="http://www.videowhisper.com/?p=RTMP+Hosting">videowhisper rtmp address</a> yet (from a managed rtmp host), go to <a href="http://www.videowhisper.com/?p=RTMP+Applications" target="_blank">RTMP Application Setup</a> for  installation details.</p>
 <input name="rtmp_server" type="text" id="rtmp_server" size="64" maxlength="256" value="<?php echo $options['rtmp_server']?>"/>
@@ -1196,7 +1270,7 @@ a {
 </select>
 
 <h4>Transcoder</h4>
-<p>If requirements are available, moderators can transcode web based video streams to iOS HLS compatible formats.</p>
+<p>If requirements are available, moderators can transcode web based video streams to <a href="http://www.videowhisper.com/?p=iPhone-iPad-Apps#hls">iOS HLS</a> compatible formats.</p>
 <select name="disableTranscoder" id="disableTranscoder">
   <option value="0" <?php echo $options['disableTranscoder']=='0'?"selected":""?>>Yes</option>
   <option value="1" <?php echo $options['disableTranscoder']=='1'?"selected":""?>>No</option>
@@ -1348,8 +1422,8 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 
 <h4>Shortcodes</h4>
 <ul>
-<li><h5>[videowhisperconsultation room="Lobby" link="1"]</h5>Displays Video Consultation application interface for specified room, with link to open in full page layout.</li>
-<li><h5>[videowhisperconsultation_hls channel="username"]</h5>Displays HTML5 HLS video code for specified stream name.</li>
+<li><h4>[videowhisperconsultation room="Lobby" link="1"]</h4>Displays Video Consultation application interface for specified room, with link to open in full page layout.</li>
+<li><h4>[videowhisperconsultation_hls channel="username"]</h4>Displays HTML5 HLS video code for specified stream name.</li>
 </ul>
 
 <?php
@@ -1419,16 +1493,17 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 				break;
 			case 'moderators':
 ?>
-<h5>Who can create rooms</h5>
+<h4>Who can create rooms</h4>
 <select name="canBroadcast" id="canBroadcast">
   <option value="members" <?php echo $options['canBroadcast']=='members'?"selected":""?>>All Members</option>
   <option value="list" <?php echo $options['canBroadcast']=='list'?"selected":""?>>Members in List *</option>
 </select>
 <br>Room owners are moderators in their rooms.
 
-<h5>* Members in List: allowed to setup rooms (comma separated user names, roles, emails, IDs)</h5>
+<h4>* Members in List: allowed to setup rooms (comma separated user names, roles, emails, IDs)</h4>
 <textarea name="broadcastList" cols="64" rows="3" id="broadcastList"><?php echo $options['broadcastList']?>
 </textarea>
+<br>This allows setting up membership sites by assigning room setup permissions only to paid roles. Paid roles can be setup with a plugin like <a href="http://affiliates.websharks-inc.com/3546-5-3-17.html">s2Member</a>.
 
 <h4>Room limit</h4>
 <input name="maxRooms" type="text" id="maxRooms" size="3" maxlength="3" value="<?php echo $options['maxRooms']?>"/>
@@ -1467,9 +1542,34 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 
 <?php
 				break;
+
+			case 'sell':
+?>
+<h3>myCred</h3>
+<p><a target="_mycred" href="https://wordpress.org/plugins/mycred/">myCRED</a> is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website. The Buy Content add-on allows you to sell any publicly available post types, including video presentation posts created by this plugin. You can select to either charge users to view the content or pay the post's author either the whole sum or a percentage.<p>
+<p>myCRED_Sell_Content_Module: <?php
+				if (class_exists( 'myCRED_Sell_Content_Module' ) ) echo 'Detected'; else echo 'Not detected. Please install and activate myCRED with Sell Content module!';
+
+				?> </p>
+
+<h4>Sell Content Setup Interface</h4>
+<select name="myCred" id="myCred">
+  <option value="0" <?php echo $options['myCred']=='0'?"selected":""?>>No</option>
+  <option value="1" <?php echo $options['myCred']=='1'?"selected":""?>>Yes</option>
+</select>
+<br>Enabling this will allow room owners to setup a price for their presentation rooms using room setup interface.
+
+<h4>Members allowed to sell video presentations</h4>
+<p>Comma separated roles, BP groups, usernames, emails, IDs</p>
+<textarea name="canSell" cols="64" rows="3" id="canSell"><?php echo $options['canSell']?>
+</textarea>
+
+
+<?php
+				break;
 			}
 
-			submit_button();
+			submit_button();§
 ?>
 </form>
 	 <?php

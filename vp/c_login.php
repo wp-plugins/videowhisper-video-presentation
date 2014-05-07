@@ -143,7 +143,34 @@ if ($room != $options['lobbyRoom'] || $options['landingRoom'] !='lobby') //not l
 	 			$loggedin=0;
  			}
 }
- 	
+ 
+//paid room?
+if ($options['myCred'])
+{
+
+$postID = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_name = '" . sanitize_file_name($room) . "' and post_type='presentation' LIMIT 0,1" );
+
+							if ($postID)
+							{
+
+$table_nameC = $wpdb->prefix . "myCRED_log";
+$userID = $current_user->ID;
+							
+								$mCa = get_post_meta( $postID, 'myCRED_sell_content', true );
+								if ($mCa) if ($mCa['price']>0)
+								{
+								$buyer = $wpdb->get_col( $sql = "SELECT DISTINCT user_id FROM {$table_nameC} WHERE ref = 'buy_content' AND user_id = $userID AND ref_id = {$postID} AND creds < 0" );
+								if (!$buyer)
+								{
+									$msg="Access purchase required!";
+									$loggedin=0;
+								}
+								
+								}
+							}
+}
+
+	
  		
 //if room name == username -> administrator	
 if (!$options['disableModeratorByName']) if ($room == $username) $administrator = 1;
