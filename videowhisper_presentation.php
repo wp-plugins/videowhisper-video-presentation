@@ -1551,7 +1551,7 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 				if (class_exists( 'myCRED_Sell_Content_Module' ) ) echo 'Detected'; else echo 'Not detected. Please install and activate myCRED with <a href="admin.php?page=myCRED_page_addons">Sell Content addon</a>!';
 
 				?> </p>
-<p>Add "presentation" to <a href="admin.php?page=myCRED_page_settings">myCRED sesttings</a> > Sell content > Post Types. Also myCRED <a href="admin.php?page=myCRED_page_addons">buyCRED addon</a> should be enabled and at least 1 <a href="admin.php?page=myCRED_page_gateways"> payment gateway</a> configured for users to be able to buy credits.  </p>
+<p>Add "presentation" to <a href="admin.php?page=myCRED_page_settings">myCRED sesttings</a> > Sell content > Post Types. Also myCRED <a href="admin.php?page=myCRED_page_addons">buyCRED addon</a> should be enabled and at least 1 <a href="admin.php?page=myCRED_page_gateways"> payment gateway</a> configured for users to be able to buy credits. Setup a page for users to buy credits with shortcode [mycred_buy_form]. </p>
 <h4>Sell Content Setup Interface</h4>
 <select name="myCred" id="myCred">
   <option value="0" <?php echo $options['myCred']=='0'?"selected":""?>>No</option>

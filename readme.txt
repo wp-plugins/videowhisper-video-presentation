@@ -5,7 +5,7 @@ Author URI: http://www.videowhisper.com
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Donate link: http://www.videowhisper.com/?p=Invest
-Tags: video, presentation, consultation, live, conference, sharing, file, chat, webcam, BuddyPress, flash, fms, red5, wowza, audio, video chat, videochat, widget, plugin, media, av, channel, sidebar, cam, group, groups, tab, slide, show, slideshow, moderator, administrator, speaker, encoder, e-learning, P2P, webinar, collaboration, membership, paid, myCred, credits, transcoding, iPhone, iPad
+Tags: video, presentation, consultation, live, conference, sharing, file, chat, webcam, BuddyPress, flash, fms, red5, wowza, audio, video chat, videochat, widget, plugin, media, av, channel, sidebar, cam, group, groups, tab, slide, show, slideshow, moderator, administrator, speaker, encoder, e-learning, P2P, webinar, collaboration, membership, paid, myCred, credits, transcoding, iPhone, iPad, tutor, person, live, training, script, clone, alternative, turnkey, scripts
 Requires at least: 2.7
 Tested up to: 3.9
 Stable tag: trunk
@@ -13,7 +13,7 @@ Stable tag: trunk
 Implement live video presentation and consultation rooms for moderated, 2 way, few to many, group video conferencing. Sell access to rooms.
 
 == Description ==
-VideoWhisper Video Consultation is a web based video communication solution designed for online video consultations, interactive live presentations, trainings, webinars, coaching and online collaboration.
+VideoWhisper Video Consultation is a web based video communication solution designed for online video consultations, interactive live presentations, trainings, webinars, coaching and online collaboration with webcam support. Read more on [WordPress Video Presentation](http://www.videowhisper.com/?p=WordPress+Video+Presentation  "WordPress Video Presentation") plugin home page.
 
 * Easy install and update as WordPress plugin
 * Widget with online rooms
@@ -65,6 +65,8 @@ If your users want to broadcast their screen (when playing a game, using a progr
 == Documentation ==
 * Plugin Homepage : http://www.videowhisper.com/?p=WordPress+Video+Presentation
 * Application Homepage : http://www.videowhisper.com/?p=Video+Consultation
+* Tutorial: [Live Tutor / Person - Paid Video Training Seminars Clone Script](http://www.turnkeyclone.com/paid-live-video-training-seminars/  "Live Tutor / Person - Paid Video Training Seminars Clone Script") 
+* Tutorial: [Paid Video Presentation Rooms - Videochat Script](http://www.videochat-scripts.com/paid-video-presentation-rooms/  "Paid Video Presentation Rooms - Videochat Script")  
 
 == Demo ==
 * See WordPress (w. BuddyPress) integration live on http://www.videochat-scripts.com/video-presentation/
