@@ -25,6 +25,7 @@ VideoWhisper Video Consultation is a web based video communication solution desi
 * Presentation post type (to easily control access per room)
 * Frontend room management
 * Setup paid rooms with myCred integration
+* Streamed video archive management with [Video Share VOD](http://wordpress.org/plugins/video-share-vod/  "Video Share / Video On Demand") WordPress Plugin
 
 **Moderators** control what participant is displayed on main screen (speaker) and can also add an additional participant (inquirer) to ask questions or assist.
 Selected roles can create free/paid rooms and are automatically moderators of these rooms.
@@ -48,7 +49,7 @@ Special requirements: This plugin has requirements beyond regular WordPress host
 == Installation ==
 * Before installing this make sure all hosting requirements are met: http://www.videowhisper.com/?p=Requirements
 * Install the RTMP application using these instructions: http://www.videowhisper.com/?p=RTMP+Applications
-* Copy this plugin folder to your wordpress installation in your plugins folder. You should obtain wp-content/plugins/videowhisper-video-presentation .
+* Install plugin from repository or if you manually download it, copy this plugin folder to your wordpress installation in your plugins folder. You should obtain wp-content/plugins/videowhisper-video-presentation . Update from WP backend to latest version.
 * Enable the plugin from Wordpress admin area and fill the "Settings", including rtmp address there.
 * Enable the widget if you want to display active rooms (with number of participants) and Presentation access link. 
 
