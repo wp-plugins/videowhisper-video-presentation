@@ -3,7 +3,7 @@
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Description: Video Presentation
-Version: 3.31.15
+Version: 3.31.16
 Author: VideoWhisper.com
 Author URI: http://www.videowhisper.com/
 Contributors: videowhisper, VideoWhisper.com
@@ -451,21 +451,6 @@ HTMLCODE;
 				//$username=preg_replace("/[^0-9a-zA-Z_]/","-",$username);
 
 
-				//if any key matches any listing
-				function inList($keys, $data)
-				{
-					if (!$keys) return 0;
-
-					$list=explode(",", strtolower(trim($data)));
-
-					foreach ($keys as $key)
-						foreach ($list as $listing)
-							if ( strtolower(trim($key)) == trim($listing) ) return 1;
-
-							return 0;
-				}
-
-
 
 				if (!$room && !$visitor)
 				{
@@ -482,7 +467,7 @@ HTMLCODE;
 					if (!$options['disableModeratorByName'])
 						if ($room == $username) $administrator = 1;
 
-						if (inList($userkeys, $options['moderatorList'])) $administrator = 1;
+						if (VWvideoPresentation::inList($userkeys, $options['moderatorList'])) $administrator = 1;
 
 						if ($administrator)
 						{
