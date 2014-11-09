@@ -51,7 +51,7 @@ Special requirements: This plugin has requirements beyond regular WordPress host
 * Install the RTMP application using these instructions: http://www.videowhisper.com/?p=RTMP+Applications
 * Install plugin from repository or if you manually download it, copy this plugin folder to your wordpress installation in your plugins folder. You should obtain wp-content/plugins/videowhisper-video-presentation . Update from WP backend to latest version.
 * Enable the plugin from Wordpress admin area and fill the "Settings", including rtmp address there.
-* Enable the widget if you want to display active rooms (with number of participants) and Presentation access link. 
+* Enable the widget if you want to display active rooms (with number of participants) and Presentation access link.
 
 == Screenshots ==
 1. Live Video Presentation
@@ -61,13 +61,13 @@ Special requirements: This plugin has requirements beyond regular WordPress host
 5. Frontend setup of Free/Paid rooms
 
 == Desktop Sharing / Screen Broadcasting ==
-If your users want to broadcast their screen (when playing a game, using a program, tutoring various computer skills) they can do that easily just by using a screen sharing driver that simulates a webcam from desktop contents. Read more on http://www.videochat-scripts.com/screen-sharing-with-flash-video-chat-software/ . 
+If your users want to broadcast their screen (when playing a game, using a program, tutoring various computer skills) they can do that easily just by using a screen sharing driver that simulates a webcam from desktop contents. Read more on http://www.videochat-scripts.com/screen-sharing-with-flash-video-chat-software/ .
 
 == Documentation ==
 * Plugin Homepage : http://www.videowhisper.com/?p=WordPress+Video+Presentation
 * Application Homepage : http://www.videowhisper.com/?p=Video+Consultation
-* Tutorial: [Live Tutor / Person - Paid Video Training Seminars Clone Script](http://www.turnkeyclone.com/paid-live-video-training-seminars/  "Live Tutor / Person - Paid Video Training Seminars Clone Script") 
-* Tutorial: [Paid Video Presentation Rooms - Videochat Script](http://www.videochat-scripts.com/paid-video-presentation-rooms/  "Paid Video Presentation Rooms - Videochat Script")  
+* Tutorial: [Live Tutor / Person - Paid Video Training Seminars Clone Script](http://www.turnkeyclone.com/paid-live-video-training-seminars/  "Live Tutor / Person - Paid Video Training Seminars Clone Script")
+* Tutorial: [Paid Video Presentation Rooms - Videochat Script](http://www.videochat-scripts.com/paid-video-presentation-rooms/  "Paid Video Presentation Rooms - Videochat Script")
 
 == Demo ==
 * See WordPress (w. BuddyPress) integration live on http://www.videochat-scripts.com/video-presentation/
@@ -76,6 +76,9 @@ If your users want to broadcast their screen (when playing a game, using a progr
 More information, the latest updates, other plugins and non-WordPress editions can be found at http://www.videowhisper.com/ .
 
 == Changelog ==
+
+= 3.31.17 =
+* Performance upgrades: increase statusInterval parameter for low web server load
 
 = 3.31.11 =
 * myCred integration to setup paid rooms
@@ -97,7 +100,7 @@ More information, the latest updates, other plugins and non-WordPress editions c
 * Codec settings
 
 = 3.17 =
-* Integrated latest application version that include P2P. 
+* Integrated latest application version that include P2P.
 * Added more settings to control P2P / RTMP streaming, bandwidth detection.
 * Fixed some possible security vulnerabilites for hosts with magic_quotes Off.
 

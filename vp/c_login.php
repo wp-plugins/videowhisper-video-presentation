@@ -1,5 +1,5 @@
 <?php
-include("../../../../wp-config.php");
+include("inc.php");
 
 $options = get_option('VWvideoPresentationOptions');
 $rtmp_server = $options['rtmp_server'];
@@ -18,8 +18,8 @@ $disableBandwidthDetection = $options['disableBandwidthDetection'];
 
 
 	$camRes = explode('x',$options['camResolution']);
-	
-	
+
+
 $room=$_GET['room_name'];
 
   include_once("incsan.php");
@@ -43,7 +43,7 @@ $room=$_GET['room_name'];
 
 
 //get apartenence if used with a BuddyPress group
-if ($room) 
+if ($room)
 if (class_exists('BP_Groups_Group'))
 {
 $group_id =  BP_Groups_Group::group_exists( $room );
@@ -51,7 +51,7 @@ $group = new BP_Groups_Group( $group_id );
 $group_member = $group->is_member;
 
 $group_admin=0;
-if ($group->admins) if (is_array($group->admins))  
+if ($group->admins) if (is_array($group->admins))
 foreach ($group->admins as $usr) if ( $usr->user_login == $current_user->user_login ) $group_admin=1;
 
 if ($group_admin) $administrator=1;
@@ -62,7 +62,7 @@ if ($group_admin) $administrator=1;
 		$regularCams=1;
 		$regularWatch=1;
 		$privateTextchat=1;
-		
+
 		$extra_info = "<BR><font color=\"#3CA2DE\">&#187;</font> You are group member in this video presentation room. A group administrator is required to manage presentations.";
 	}
 }
@@ -90,10 +90,10 @@ $msg="";
 
 
 switch ($canAccess)
-{	
+{
 	case "all":
 	$loggedin=1;
-	if (!$username) 
+	if (!$username)
 	{
 		$username="Guest".base_convert((time()-1224350000).rand(0,10),10,36);
 		$visitor=1; //ask for username
@@ -111,30 +111,30 @@ switch ($canAccess)
 	break;
 }
 
-if (!$room && !$visitor) 
+if (!$room && !$visitor)
 {
-	if ($options['landingRoom']=='username') 	//can create	
-	{		
+	if ($options['landingRoom']=='username') 	//can create
+	{
 	$room=$username;
-	$administrator=1;	
+	$administrator=1;
 	}
 	else $room = $options['lobbyRoom']; //or go to default
 }
  else if (!$room) $room = $options['lobbyRoom'];  //visitor can't create room
 
 
-global $wpdb;           
+global $wpdb;
 $table_name3 = $wpdb->prefix . "vw_vprooms";
 $wpdb->flush();
 
 //room owner?
 $rm = $wpdb->get_row("SELECT owner FROM $table_name3 where name='$room'");
-if ($rm) if ($rm->owner == $current_user->ID) $administrator=1;	
+if ($rm) if ($rm->owner == $current_user->ID) $administrator=1;
 
 if (!$options['anyRoom']) //room must exist
 if ($room != $options['lobbyRoom'] || $options['landingRoom'] !='lobby') //not lobby
 {
- 
+
 			$wpdb->flush();
  			$rm = $wpdb->get_row("SELECT count(id) as no FROM $table_name3 where name='$room'");
  			if (!$rm->no)
@@ -143,7 +143,7 @@ if ($room != $options['lobbyRoom'] || $options['landingRoom'] !='lobby') //not l
 	 			$loggedin=0;
  			}
 }
- 
+
 //paid room and not moderator?
 if ($options['myCred'] && !$administrator)
 {
@@ -155,7 +155,7 @@ $postID = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_name = '" . sa
 
 $table_nameC = $wpdb->prefix . "myCRED_log";
 $userID = $current_user->ID;
-							
+
 								$mCa = get_post_meta( $postID, 'myCRED_sell_content', true );
 								if ($mCa) if ($mCa['price']>0)
 								{
@@ -165,14 +165,14 @@ $userID = $current_user->ID;
 									$msg="Access purchase required!";
 									$loggedin=0;
 								}
-								
+
 								}
 							}
 }
 
-	
- 		
-//if room name == username -> administrator	
+
+
+//if room name == username -> administrator
 if (!$options['disableModeratorByName']) if ($room == $username) $administrator = 1;
 if (inList($userkeys, $options['moderatorList'])) $administrator = 1;
 

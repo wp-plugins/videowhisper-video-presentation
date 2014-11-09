@@ -8,17 +8,18 @@ ct=session time (in milliseconds)
 lt=last session time received from this script in (milliseconds)
 */
 
-	
-include("../../../../wp-config.php");
-include("inc.php");
-
 $s=$_POST['s'];
 $u=$_POST['u'];
 $r=$_POST['r'];
 $m=$_POST['m'];
-	
-$currentTime=$_POST[ct];
-$lastTime=$_POST[lt];
+$currentTime=$_POST['ct'];
+$lastTime=$_POST['lt'];
+
+//overload protection min 15s between requests
+//if ($currentTime - $lastTime < 15000) exit;
+
+include("inc.php");
+$options = get_option('VWvideoPresentationOptions');
 
 	//sanitize variables
 	include("incsan.php");
@@ -30,7 +31,7 @@ $lastTime=$_POST[lt];
 	//exit if no valid session name or room name
 	if (!$s) exit;
 	if (!$r) exit;
-	
+
 global $wpdb;
 $table_name = $wpdb->prefix . "vw_vpsessions";
 $wpdb->flush();
@@ -50,11 +51,23 @@ $wpdb->flush();
     $wpdb->query($sql);
 	}
 
-	$exptime=$ztime-30;
-	$sql="DELETE FROM `$table_name` WHERE edate < $exptime";
-  $wpdb->query($sql);
+	//do not clean more often than 20s (mysql table invalidate)
+	$lastClean = 0; $cleanNow = false;
+	$lastCleanFile = $options['uploadsPath'] . 'lastclean.txt';
 
-  
+	if (file_exists($lastCleanFile)) $lastClean = file_get_contents($lastCleanFile);
+	if (!$lastClean) $cleanNow = true;
+	else if ($ztime - $lastClean > 20) $cleanNow = true;
+
+	if ($cleanNow)
+	{
+	if (!$options['onlineExpiration']) $options['onlineExpiration'] = 310;
+	$exptime=$ztime-$options['onlineExpiration'];
+	$sql="DELETE FROM `$table_name` WHERE edate < $exptime";
+	$wpdb->query($sql);
+	file_put_contents($lastCleanFile, $ztime);
+	}
+
 $maximumSessionTime=0; //900000ms=15 minutes
 
 $disconnect=""; //anything else than "" will disconnect with that message

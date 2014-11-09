@@ -3,7 +3,7 @@
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Description: Video Presentation
-Version: 3.31.16
+Version: 3.31.17
 Author: VideoWhisper.com
 Author URI: http://www.videowhisper.com/
 Contributors: videowhisper, VideoWhisper.com
@@ -64,21 +64,24 @@ if (!class_exists("VWvideoPresentation"))
 				$wpdb->flush();
 
 				$sql = "DROP TABLE IF EXISTS `$table_name`;
-		CREATE TABLE `$table_name` (
-		  `id` int(11) NOT NULL auto_increment,
-		  `session` varchar(64) NOT NULL,
-		  `username` varchar(64) NOT NULL,
-		  `room` varchar(64) NOT NULL,
-		  `message` text NOT NULL,
-		  `sdate` int(11) NOT NULL,
-		  `edate` int(11) NOT NULL,
-		  `status` tinyint(4) NOT NULL,
-		  `type` tinyint(4) NOT NULL,
-		  PRIMARY KEY  (`id`),
-		  KEY `status` (`status`),
-		  KEY `type` (`type`),
-		  KEY `room` (`room`)
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Video Whisper: Sessions - 2009@videowhisper.com' AUTO_INCREMENT=1;
+CREATE TABLE IF NOT EXISTS `$table_name` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session` varchar(64) NOT NULL,
+  `username` varchar(64) NOT NULL,
+  `room` varchar(64) NOT NULL,
+  `message` text NOT NULL,
+  `sdate` int(11) NOT NULL,
+  `edate` int(11) NOT NULL,
+  `status` tinyint(4) NOT NULL,
+  `type` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  KEY `type` (`type`),
+  KEY `room` (`room`),
+  KEY `session` (`session`),
+  KEY `edate` (`edate`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Video Whisper: Sessions - 2009@videowhisper.com' AUTO_INCREMENT=1 ;
+
 
 		DROP TABLE IF EXISTS `$table_name3`;
 		CREATE TABLE `$table_name3` (
@@ -95,6 +98,8 @@ if (!class_exists("VWvideoPresentation"))
 		  KEY `type` (`type`),
 		  KEY `owner` (`owner`)
 		) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Video Whisper: Rooms - 2014@videowhisper.com' AUTO_INCREMENT=1 ;
+
+INSERT INTO `$table_name3` ( `name`, `owner`, `sdate`, `edate`, `status`, `type`) VALUES ( 'Lobby', '1', NOW(), NOW(), '1', '1');
 
 		";
 
@@ -260,13 +265,27 @@ if (!class_exists("VWvideoPresentation"))
 			else $permalink = $raw_url;
 
 			//clean recordings
-			$exptime=time()-30;
-			$sql="DELETE FROM `$table_name` WHERE edate < $exptime";
-			$wpdb->query($sql);
+	//do not clean more often than 20s (mysql table invalidate)
+	$lastClean = 0; $cleanNow = false;
+	$lastCleanFile = $options['uploadsPath'] . 'lastclean.txt';
+
+	if (file_exists($lastCleanFile)) $lastClean = file_get_contents($lastCleanFile);
+	if (!$lastClean) $cleanNow = true;
+	else if ($ztime - $lastClean > 20) $cleanNow = true;
+
+	if ($cleanNow)
+	{
+	$options = get_option('VWvideoPresentationOptions');
+	if (!$options['onlineExpiration']) $options['onlineExpiration'] = 310;
+	$exptime=$ztime-$options['onlineExpiration'];
+	$sql="DELETE FROM `$table_name` WHERE edate < $exptime";
+	$wpdb->query($sql);
+	file_put_contents($lastCleanFile, $ztime);
+	}
 
 			$wpdb->flush();
 
-			$items =  $wpdb->get_results("SELECT o.room AS room, count(*) AS users FROM `$table_name` AS o, `$table_name3` AS r WHERE o.room=r.name AND o.status='1' AND r.type='1' GROUP BY room ORDER BY users DESC");
+			$items =  $wpdb->get_results( "SELECT o.room AS room, count(*) AS users FROM `$table_name` AS o, `$table_name3` AS r WHERE o.room=r.name AND o.status='1' AND r.type='1' GROUP BY room ORDER BY users DESC");
 
 			echo "<ul>";
 			if ($items) foreach ($items as $item) echo "<li><B><a href='".VWvideoPresentation::roomURL($item->room)."' target='_blank'>".$item->room."</a></B> (" . $item->users .")</a></li>";
@@ -1162,7 +1181,7 @@ a {
 				'lobbyRoom' => 'Lobby',
 
 				'camResolution' => '480x360',
-				'camFPS' => '15',
+				'camFPS' => '30',
 
 				'camBandwidth' => '40960',
 				'camMaxBandwidth' => '81920',
@@ -1184,8 +1203,9 @@ a {
 				'disableBandwidthDetection' => '0',
 				'welcome' =>  "Welcome!<BR><font color=\"#3CA2DE\">&#187;</font> Click top bar icons to enable/disable features and panels. <BR><font color=\"#3CA2DE\">&#187;</font> Click any participant from users list for more options depending on your permissions. <BR><font color=\"#3CA2DE\">&#187;</font> Try pasting urls, youtube movie urls, picture urls, emails, twitter accounts as @videowhisper in your text chat. <BR><font color=\"#3CA2DE\">&#187;</font> Download daily chat logs from file list.",
 				'layoutCode' => '',
-				'parameters' => '&bufferLive=0.1&bufferFull=0.1&bufferLivePlayback=0.1&bufferFullPlayback=0.1&files_enabled=1&file_upload=1&file_delete=1&chat_enabled=1&floodProtection=3&writeText=1&room_limit=200&showTimer=1&showCredit=1&disconnectOnTimeout=1&showCamSettings=1&advancedCamSettings=1&configureSource=1&disableVideo=0&disableSound=0&users_enabled=1&publicVideosN=0&publicVideosMax=8&fillWindow=0&generateSnapshots=1&pushToTalk=1&change_background=0&administrator=0&regularCams=0&regularWatch=0&privateTextchat=0&externalStream=0&slideShow=0&publicVideosAdd=0',
-				'parametersAdmin' => '&bufferLive=0.1&bufferFull=0.1&bufferLivePlayback=0.1&bufferFullPlayback=0.1&files_enabled=1&file_upload=1&file_delete=1&chat_enabled=1&floodProtection=3&writeText=1&room_limit=200&showTimer=1&showCredit=1&disconnectOnTimeout=1&showCamSettings=1&advancedCamSettings=1&configureSource=1&disableVideo=0&disableSound=0&users_enabled=1&publicVideosN=0&publicVideosMax=8&fillWindow=0&generateSnapshots=1&pushToTalk=0&change_background=1&administrator=1&regularCams=1&regularWatch=1&privateTextchat=1&externalStream=1&slideShow=1&publicVideosAdd=1',
+				'onlineExpiration' =>'310',
+				'parameters' => '&bufferLive=0.1&bufferFull=0.1&bufferLivePlayback=0.1&bufferFullPlayback=0.1&files_enabled=1&file_upload=1&file_delete=1&chat_enabled=1&floodProtection=3&writeText=1&room_limit=200&showTimer=1&showCredit=1&disconnectOnTimeout=1&showCamSettings=1&advancedCamSettings=1&configureSource=1&disableVideo=0&disableSound=0&users_enabled=1&publicVideosN=0&publicVideosMax=8&fillWindow=0&generateSnapshots=1&pushToTalk=1&change_background=0&administrator=0&regularCams=0&regularWatch=0&privateTextchat=0&externalStream=0&slideShow=0&publicVideosAdd=0&statusInterval=300000',
+				'parametersAdmin' => '&bufferLive=0.1&bufferFull=0.1&bufferLivePlayback=0.1&bufferFullPlayback=0.1&files_enabled=1&file_upload=1&file_delete=1&chat_enabled=1&floodProtection=3&writeText=1&room_limit=200&showTimer=1&showCredit=1&disconnectOnTimeout=1&showCamSettings=1&advancedCamSettings=1&configureSource=1&disableVideo=0&disableSound=0&users_enabled=1&publicVideosN=0&publicVideosMax=8&fillWindow=0&generateSnapshots=1&pushToTalk=0&change_background=1&administrator=1&regularCams=1&regularWatch=1&privateTextchat=1&externalStream=1&slideShow=1&publicVideosAdd=1&statusInterval=60000',
 				'videowhisper' => 0
 			);
 
@@ -1398,6 +1418,13 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 <h4>Parameters for Moderators</h4>
 <textarea name="parametersAdmin" id="parametersAdmin" cols="64" rows="8"><?php echo $options['parametersAdmin']?></textarea>
 <br>Should include special permissions for moderators.
+
+<h4>Online Expiration</h4>
+<p>How long to consider user online if no web status update occurs.</p>
+<input name="onlineExpiration" type="text" id="onlineExpiration" size="5" maxlength="6" value="<?php echo $options['onlineExpiration']?>"/>s
+<br>Should be 10s higher than maximum statusInterval (ms) configured in parameters. A higher statusInterval decreases web server load caused by status updates.
+
+
 
 <h4>Show VideoWhisper Powered by</h4>
 <select name="videowhisper" id="videowhisper">
