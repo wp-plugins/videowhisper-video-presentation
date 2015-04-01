@@ -51,13 +51,13 @@ $wpdb->flush();
     $wpdb->query($sql);
 	}
 
-	//do not clean more often than 20s (mysql table invalidate)
+	//do not clean more often than 25s (mysql table invalidate)
 	$lastClean = 0; $cleanNow = false;
 	$lastCleanFile = $options['uploadsPath'] . 'lastclean.txt';
 
 	if (file_exists($lastCleanFile)) $lastClean = file_get_contents($lastCleanFile);
 	if (!$lastClean) $cleanNow = true;
-	else if ($ztime - $lastClean > 20) $cleanNow = true;
+	else if ($ztime - $lastClean > 25) $cleanNow = true;
 
 	if ($cleanNow)
 	{

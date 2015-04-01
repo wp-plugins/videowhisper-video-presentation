@@ -1,6 +1,6 @@
 <?php
 
-//do not load plugins
+//do not load other plugins
 define('WP_INSTALLING', true);
 
 include("../../../../wp-config.php");

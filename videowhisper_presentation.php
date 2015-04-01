@@ -3,7 +3,7 @@
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Description: Video Presentation
-Version: 3.31.17
+Version: 3.31.18
 Author: VideoWhisper.com
 Author URI: http://www.videowhisper.com/
 Contributors: videowhisper, VideoWhisper.com
@@ -253,6 +253,8 @@ INSERT INTO `$table_name3` ( `name`, `owner`, `sdate`, `edate`, `status`, `type`
 		function widgetContent()
 		{
 
+			$options = get_option('VWvideoPresentationOptions');
+
 			global $wpdb;
 			$table_name = $wpdb->prefix . "vw_vpsessions";
 			$table_name3 = $wpdb->prefix . "vw_vprooms";
@@ -264,7 +266,7 @@ INSERT INTO `$table_name3` ( `name`, `owner`, `sdate`, `edate`, `status`, `type`
 			if ($page_id > 0) $permalink = get_permalink( $page_id );
 			else $permalink = $raw_url;
 
-			//clean recordings
+	//clean expired users
 	//do not clean more often than 20s (mysql table invalidate)
 	$lastClean = 0; $cleanNow = false;
 	$lastCleanFile = $options['uploadsPath'] . 'lastclean.txt';
@@ -275,7 +277,6 @@ INSERT INTO `$table_name3` ( `name`, `owner`, `sdate`, `edate`, `status`, `type`
 
 	if ($cleanNow)
 	{
-	$options = get_option('VWvideoPresentationOptions');
 	if (!$options['onlineExpiration']) $options['onlineExpiration'] = 310;
 	$exptime=$ztime-$options['onlineExpiration'];
 	$sql="DELETE FROM `$table_name` WHERE edate < $exptime";
@@ -295,7 +296,6 @@ INSERT INTO `$table_name3` ( `name`, `owner`, `sdate`, `edate`, `status`, `type`
 			?><a href="<?php echo $permalink; ?>"><img src="<?php echo $root_url; ?>wp-content/plugins/videowhisper-video-presentation/vp/templates/consultation/i_webcam.png" align="absmiddle" border="0">Enter Presentation</a>
 	<?php
 
-			$options = get_option('VWvideoPresentationOptions');
 			$state = 'block' ;
 			if (!$options['videowhisper']) $state = 'none';
 			echo '<div id="VideoWhisper" style="display: ' . $state . ';"><p>Powered by VideoWhisper <a href="http://www.videowhisper.com/?p=WordPress+Video+Presentation">Live Video Presentation Software</a>.</p></div>';
@@ -376,6 +376,8 @@ INSERT INTO `$table_name3` ( `name`, `owner`, `sdate`, `edate`, `status`, `type`
 			return $Protocol.$_SERVER['HTTP_HOST'].str_replace($_SERVER['DOCUMENT_ROOT'], '', $file);
 		}
 
+
+//! Shortcodes
 
 		function shortcode($atts)
 		{
@@ -691,7 +693,7 @@ HTMLCODE;
 			}
 
 			//setup price
-			$myCred =  $options['myCred'] && VWvideoPresentation::inList($userkeys,$options['canSell']);
+			$myCred =  $options['myCred'] && VWvideoPresentation::inList($userkeys, $options['canSell']);
 
 			$this_page    =   get_permalink();
 
@@ -1581,7 +1583,7 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 				break;
 			}
 
-			submit_button();§
+			submit_button();
 ?>
 </form>
 	 <?php
