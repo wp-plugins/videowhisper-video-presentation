@@ -2,22 +2,13 @@
 include("inc.php");
 
 $options = get_option('VWvideoPresentationOptions');
-$rtmp_server = $options['rtmp_server'];
-$rtmp_amf = $options['rtmp_amf'];
+
+
 $userName =  $options['userName']; if (!$userName) $userName='user_nicename';
 $canAccess = $options['canAccess'];
 $accessList = $options['accessList'];
 
-$serverRTMFP = $options['serverRTMFP'];
-$p2pGroup = $options['p2pGroup'];
-$supportRTMP = $options['supportRTMP'];
-$supportP2P = $options['supportP2P'];
-$alwaystRTMP = $options['alwaystRTMP'];
-$alwaystP2P = $options['alwaystP2P'];
-$disableBandwidthDetection = $options['disableBandwidthDetection'];
-
-
-	$camRes = explode('x',$options['camResolution']);
+$camRes = explode('x',$options['camResolution']);
 
 
 $room=$_GET['room_name'];
@@ -196,4 +187,4 @@ $filterReplace=urlencode(" ** ");
 //message
 $welcome=urlencode( html_entity_decode($options['welcome']) . $extra_info);
 
-?>firstVar=fixed&server=<?=$rtmp_server?>&serverAMF=<?=$rtmp_amf?>&serverRTMFP=<?=urlencode($serverRTMFP)?>&p2pGroup=<?=$p2pGroup?>&supportRTMP=<?=$supportRTMP?>&supportP2P=<?=$supportP2P?>&alwaysRTMP=<?=$alwaysRTMP?>&alwaysP2P=<?=$alwaysP2P?>&disableBandwidthDetection=<?=$disableBandwidthDetection?>&room=<?=$room?>&welcome=<?=$welcome?>&username=<?=$username?>&msg=<?=urlencode($msg)?>&visitor=0&loggedin=<?=$loggedin?>&background_url=<?=urlencode( site_url() . "/wp-content/plugins/videowhisper-video-presentation/vp/templates/consultation/background.jpg")?>&camWidth=<?php echo $camRes[0];?>&camHeight=<?php echo $camRes[1];?>&camFPS=<?php echo $options['camFPS']?>&camBandwidth=<?php echo $options['camBandwidth'] ?>&camMaxBandwidth=<?php echo $options['camMaxBandwidth'] ?>&videoCodec=<?=$options['videoCodec']?>&codecProfile=<?=$options['codecProfile']?>&codecLevel=<?=$options['codecLevel']?>&soundCodec=<?=$options['soundCodec']?>&soundQuality=<?=$options['soundQuality']?>&micRate=<?=$options['micRate']?>&layoutCode=<?=urlencode(html_entity_decode($options['layoutCode']))?>&filterRegex=<?=$filterRegex?>&filterReplace=<?=$filterReplace?>&loadstatus=1<?php echo $parameters; ?>&debugmessage=<?=urlencode($debug)?>
+?>firstVar=fixed&server=<?=urlencode(trim($options['rtmp_server']))?>&serverAMF=<?=$options['rtmp_amf']?>&serverRTMFP=<?=urlencode(trim($options['serverRTMFP']))?>&p2pGroup=<?=$options['p2pGroup']?>&supportRTMP=<?= $options['supportRTMP']?>&supportP2P=<?=$options['supportP2P']?>&alwaysRTMP=<?=$options['alwaysRTMP']?>&alwaysP2P=<?=$options['alwaysP2P']?>&disableBandwidthDetection=<?=$options['disableBandwidthDetection']?>&disableUploadDetection=<?=$options['disableBandwidthDetection']?>&room=<?=$room?>&welcome=<?=$welcome?>&username=<?=$username?>&msg=<?=urlencode($msg)?>&visitor=0&loggedin=<?=$loggedin?>&background_url=<?=urlencode( site_url() . "/wp-content/plugins/videowhisper-video-presentation/vp/templates/consultation/background.jpg")?>&camWidth=<?php echo $camRes[0];?>&camHeight=<?php echo $camRes[1];?>&camFPS=<?php echo $options['camFPS']?>&camBandwidth=<?php echo $options['camBandwidth'] ?>&camMaxBandwidth=<?php echo $options['camMaxBandwidth'] ?>&videoCodec=<?=$options['videoCodec']?>&codecProfile=<?=$options['codecProfile']?>&codecLevel=<?=$options['codecLevel']?>&soundCodec=<?=$options['soundCodec']?>&soundQuality=<?=$options['soundQuality']?>&micRate=<?=$options['micRate']?>&layoutCode=<?=urlencode(html_entity_decode($options['layoutCode']))?>&filterRegex=<?=$filterRegex?>&filterReplace=<?=$filterReplace?>&loadstatus=1<?php echo $parameters; ?>&debugmessage=<?=urlencode($debug)?>

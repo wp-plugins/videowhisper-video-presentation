@@ -3,7 +3,7 @@
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Description: Video Presentation
-Version: 3.31.19
+Version: 3.31.21
 Author: VideoWhisper.com
 Author URI: http://www.videowhisper.com/
 Contributors: videowhisper, VideoWhisper.com
@@ -1200,7 +1200,7 @@ a {
 				'p2pGroup' => 'VideoWhisper',
 				'supportRTMP' => '1',
 				'supportP2P' => '0',
-				'alwaysRTMP' => '0',
+				'alwaysRTMP' => '1',
 				'alwaysP2P' => '0',
 				'disableBandwidthDetection' => '0',
 				'welcome' =>  "Welcome!<BR><font color=\"#3CA2DE\">&#187;</font> Click top bar icons to enable/disable features and panels. <BR><font color=\"#3CA2DE\">&#187;</font> Click any participant from users list for more options depending on your permissions. <BR><font color=\"#3CA2DE\">&#187;</font> Try pasting urls, youtube movie urls, picture urls, emails, twitter accounts as @videowhisper in your text chat. <BR><font color=\"#3CA2DE\">&#187;</font> Download daily chat logs from file list.",
