@@ -3,7 +3,7 @@
 Plugin Name: VideoWhisper Video Presentation
 Plugin URI: http://www.videowhisper.com/?p=WordPress+Video+Presentation
 Description: Video Presentation
-Version: 3.31.21
+Version: 3.31.23
 Author: VideoWhisper.com
 Author URI: http://www.videowhisper.com/
 Contributors: videowhisper, VideoWhisper.com
@@ -1053,8 +1053,8 @@ HTMLCODE;
 
 					echo "Transcoding '$stream' ($postID) to '$room'... <BR>";
 					$log_file =  $upath . "videowhisper_transcoder.log";
-					$cmd = $options['ffmpegPath'] . " -s 480x360 -r 15 -vb 512k -vcodec libx264 -coder 0 -bf 0 -analyzeduration 0 -level 3.1 -g 30 -maxrate 768k -acodec libfaac -ac 2 -ar 22050 -ab 96k -x264opts vbv-maxrate=364:qpmin=4:ref=4 -threads 4 -rtmp_pageurl \"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . "\" -rtmp_swfurl \"http://".$_SERVER['HTTP_HOST']."\" -f flv \"" .
-						$rtmpAddress . "/i_". $room . "\" -i \"" . $rtmpAddressView ."/". $stream . "\" >&$log_file & ";
+					$cmd = $options['ffmpegPath'] .' ' .  $options['ffmpegTranscode'] . " -threads 1 -rtmp_pageurl \"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . "\" -rtmp_swfurl \"http://".$_SERVER['HTTP_HOST']."\" -f flv \"" .
+					$rtmpAddress . "/i_". $room . "\" -i \"" . $rtmpAddressView ."/". $stream . "\" >&$log_file & ";
 
 					//echo $cmd;
 					exec($cmd, $output, $returnvalue);
@@ -1176,6 +1176,7 @@ a {
 				'disableTranscoder' => '0',
 				'httpstreamer' => 'http://localhost:1935/videowhisper-x/',
 				'ffmpegPath' => '/usr/local/bin/ffmpeg',
+				'ffmpegTranscode' => '-vcodec copy -acodec libfaac -ac 2 -ar 22050 -ab 96k',
 
 				'uploadsPath' => plugin_dir_path(__FILE__) . 'vp/uploads/',
 
@@ -1253,6 +1254,8 @@ a {
    <a href="<?php echo $_SERVER["REQUEST_URI"]; ?>&tab=moderators" class="nav-tab <?php echo $active_tab=='moderators'?'nav-tab-active':''; ?>">Moderators</a>
     <a href="<?php echo $_SERVER["REQUEST_URI"]; ?>&tab=participants" class="nav-tab <?php echo $active_tab=='participants'?'nav-tab-active':''; ?>">Participants</a>
    <a href="<?php echo $_SERVER["REQUEST_URI"]; ?>&tab=sell" class="nav-tab <?php echo $active_tab=='sell'?'nav-tab-active':''; ?>">Sell</a>
+    <a href="<?php echo $_SERVER["REQUEST_URI"]; ?>&tab=documentation" class="nav-tab <?php echo $active_tab=='documentation'?'nav-tab-active':''; ?>">Documentation</a>
+
 </h2>
 
 <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
@@ -1298,20 +1301,38 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 <BR> Path to latest FFMPEG. Required for transcoding of web based streams.
 <?php
 				echo "<BR>FFMPEG: ";
-				$cmd ="/usr/local/bin/ffmpeg -codecs";
+				$cmd =$options['ffmpegPath'] . ' -version';
 				exec($cmd, $output, $returnvalue);
-				if ($returnvalue == 127)  echo "not detected: $cmd"; else echo "detected";
+				if ($returnvalue == 127)  echo "not detected: $cmd"; else
+				{
+					echo "detected";
+					echo '<BR>' . $output[0];
+					echo '<BR>' . $output[1];
+				}
+
+				$cmd =$options['ffmpegPath'] . ' -codecs';
+				exec($cmd, $output, $returnvalue);
 
 				//detect codecs
 				if ($output) if (count($output))
-						foreach (array('h264','faac','speex', 'nellymoser') as $cod)
+					{
+						echo "<br>Codecs:";
+						foreach (array('h264', 'vp6', 'faac','speex', 'nellymoser') as $cod)
 						{
 							$det=0; $outd="";
 							echo "<BR>$cod codec: ";
 							foreach ($output as $outp) if (strstr($outp,$cod)) { $det=1; $outd=$outp; };
 							if ($det) echo "detected ($outd)"; else echo "missing: please configure and install ffmpeg with $cod";
 						}
+					}
 ?>
+
+<h4>FFMPEG Transcoding Parameters</h4>
+<input name="ffmpegTranscode" type="text" id="ffmpegTranscode" size="100" maxlength="256" value="<?php echo $options['ffmpegTranscode']?>"/>
+<BR>For lower server load and higher performance, web clients should be configured to broadcast video already suitable for target device (H.264 Baseline 3.1 for most iOS devices) so only audio needs to be encoded.
+<BR>Ex.(transcode audio for iOS): -vcodec copy -acodec libfaac -ac 2 -ar 22050 -ab 96k
+<BR>Ex.(transcode video+audio): -vcodec libx264 -s 480x360 -r 15 -vb 512k -x264opts vbv-maxrate=364:qpmin=4:ref=4 -coder 0 -bf 0 -analyzeduration 0 -level 3.1 -g 30 -maxrate 768k -acodec libfaac -ac 2 -ar 22050 -ab 96k
+<BR>For advanced settings see <a href="https://developer.apple.com/library/ios/technotes/tn2224/_index.html#//apple_ref/doc/uid/DTS40009745-CH1-SETTINGSFILES">iOS HLS Supported Codecs<a> and <a href="https://trac.ffmpeg.org/wiki/Encode/AAC">FFMPEG AAC Encoding Guide</a>.
 
 <h4>Uploads Path</h4>
 <p>Path where logs and snapshots will be uploaded.</p>
@@ -1434,12 +1455,6 @@ This is used for accessing transcoded streams on HLS playback. Usually available
   <option value="1" <?php echo $options['videowhisper']?"selected":""?>>Yes</option>
 </select>
 
-<h4>Shortcodes</h4>
-<ul>
-<li><h4>[videowhisperconsultation room="Lobby" link="1"]</h4>Displays Video Consultation application interface for specified room, with link to open in full page layout.</li>
-<li><h4>[videowhisperconsultation_hls channel="username"]</h4>Displays HTML5 HLS video code for specified stream name.</li>
-</ul>
-
 <?php
 				break;
 			case 'video':
@@ -1559,13 +1574,7 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 
 			case 'sell':
 ?>
-<h3>myCRED</h3>
-<p><a target="_mycred" href="https://wordpress.org/plugins/mycred/">myCRED</a> is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website. The Buy Content add-on allows you to sell any publicly available post types, including video presentation posts created by this plugin. You can select to either charge users to view the content or pay the post's author either the whole sum or a percentage.<p>
-<p>myCRED Sell Content Module: <?php
-				if (class_exists( 'myCRED_Sell_Content_Module' ) ) echo 'Detected'; else echo 'Not detected. Please install and activate myCRED with <a href="admin.php?page=myCRED_page_addons">Sell Content addon</a>!';
 
-				?> </p>
-<p>Add "presentation" to <a href="admin.php?page=myCRED_page_settings">myCRED sesttings</a> > Sell content > Post Types. Also myCRED <a href="admin.php?page=myCRED_page_addons">buyCRED addon</a> should be enabled and at least 1 <a href="admin.php?page=myCRED_page_gateways"> payment gateway</a> configured for users to be able to buy credits. Setup a page for users to buy credits with shortcode [mycred_buy_form]. </p>
 <h4>Sell Content Setup Interface</h4>
 <select name="myCred" id="myCred">
   <option value="0" <?php echo $options['myCred']=='0'?"selected":""?>>No</option>
@@ -1579,11 +1588,46 @@ This is used for accessing transcoded streams on HLS playback. Usually available
 </textarea>
 
 
+<h3>Setup and Configure myCRED</h3>
+Follow steps below to make sure myCRED is setup and configured to manage channel access sales.
+
+<h4>1) myCRED</h4>
+<?php
+				if (is_plugin_active('mycred/mycred.php')) echo 'Detected'; else echo 'Not detected. Please install and activate <a target="_mycred" href="https://wordpress.org/plugins/mycred/">myCRED</a>!';
+
+				if (function_exists( 'mycred_get_users_cred')) echo '<br>Testing balance: You have ' . mycred_get_users_cred() . ' points.';
+?>
+
+<p><a target="_mycred" href="https://wordpress.org/plugins/mycred/">myCRED</a> is an adaptive points management system that lets you award / charge your users for interacting with your WordPress powered website. The Buy Content add-on allows you to sell any publicly available post types, including video presentation posts created by this plugin. You can select to either charge users to view the content or pay the post's author either the whole sum or a percentage.<p>
+<h4>2) myCRED buyCRED Module</h4>
+ <?php
+				if (class_exists( 'myCRED_buyCRED_Module' ) ) echo 'Detected'; else echo 'Not detected. Please install and activate myCRED with <a href="admin.php?page=myCRED_page_addons">buyCRED addon</a>!';
+?>
+<p>
+myCRED <a href="admin.php?page=myCRED_page_addons">buyCRED addon</a> should be enabled and at least 1 <a href="admin.php?page=myCRED_page_gateways"> payment gateway</a> configured for users to be able to buy credits. Setup a page for users to buy credits with shortcode [mycred_buy_form]. </p>
+<h4>3) myCRED Sell Content Module</h4>
+ <?php
+				if (class_exists( 'myCRED_Sell_Content_Module' ) ) echo 'Detected'; else echo 'Not detected. Please install and activate myCRED with <a href="admin.php?page=myCRED_page_addons">Sell Content addon</a>!';
+?>
+<p>
+myCRED <a href="admin.php?page=myCRED_page_addons">Sell Content addon</a> should be enabled and "presentation" added to Post Types in <a href="admin.php?page=myCRED_page_settings">Sell Content settings tab</a> so access to presentation rooms can be sold. You can also configure payout to content author from there, if necessary.
+<?php
+				break;
+
+							case 'documentation':
+?>
+<h3>Shortcodes</h3>
+
+<h4>[videowhisperconsultation room="Lobby" link="1"]</h4>
+Displays Video Consultation application interface for specified room, with link to open in full page layout.
+
+<h4>[videowhisperconsultation_hls channel="username"]</h4>
+Displays HTML5 HLS video code for specified stream name.
 <?php
 				break;
 			}
 
-			submit_button();
+			if (!in_array($active_tab, array('documentation'))) submit_button();
 ?>
 </form>
 	 <?php
